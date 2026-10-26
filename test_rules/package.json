@@ -1,0 +1,13 @@
+{
+  "name": "firestore-rules-tests",
+  "version": "1.0.0",
+  "description": "Firestore Rules Unit Testing with Emulator",
+  "main": "test_rules.js",
+  "scripts": {
+    "test": "node --test test_rules.js"
+  },
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^3.0.4",
+    "firebase": "^10.14.0"
+  }
+}

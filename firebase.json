@@ -1,0 +1,37 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": false
+    }
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "cilalutask",
+          "appId": "1:444266460057:android:70dd1ec95ec31f2a959908",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "cilalutask",
+          "configurations": {
+            "android": "1:444266460057:android:70dd1ec95ec31f2a959908",
+            "ios": "1:444266460057:ios:c5e988baa0c2a3c2959908",
+            "macos": "1:444266460057:ios:c5e988baa0c2a3c2959908",
+            "web": "1:444266460057:web:6f63dc46710535f6959908",
+            "windows": "1:444266460057:web:f2706887ba043636959908"
+          }
+        }
+      }
+    }
+  }
+}
