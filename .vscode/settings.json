@@ -1,6 +1,9 @@
 {
     "cmake.sourceDirectory": "windows/flutter",
     "github-actions.workflows.pinnedVersionWarnings": false,
+    "files.associations": {
+        "**/.github/workflows/*.yml": "yaml"
+    },
     "java.home": "C:/Program Files/Android/Android Studio/jbr",
     "java.jdt.ls.java.home": "C:/Program Files/Android/Android Studio/jbr",
     "gradle.java.home": "C:/Program Files/Android/Android Studio/jbr"

@@ -118,6 +118,8 @@ service cloud.firestore {
         allow write: if isCompanyAdmin(companyCode);
       }
 
+      //by Erlangga In Monday, 26 Okt 2026, 14.15 PM
+      
       // ───────────────────────────────────────────────────────────
       // CHANNELS & MESSAGES SUB-COLLECTIONS
       // ───────────────────────────────────────────────────────────
