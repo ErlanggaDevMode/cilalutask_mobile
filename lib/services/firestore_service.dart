@@ -28,17 +28,17 @@ class FirestoreService {
   Future<void> init() async {
     try {
       _db = FirebaseFirestore.instance;
+      _isAvailable = true;
       // Quick connectivity check against healthcheck doc
       await _db!
           .collection('_ping')
           .doc('status')
           .get()
           .timeout(const Duration(seconds: 4));
-      _isAvailable = true;
       debugPrint('☁️ Firestore: Connected and ready');
     } catch (e) {
-      _isAvailable = false;
-      debugPrint('☁️ Firestore: Offline mode — $e');
+      _isAvailable = _db != null;
+      debugPrint('☁️ Firestore: Initialized (offline mode enabled) — $e');
     }
   }
 

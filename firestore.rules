@@ -42,7 +42,7 @@ service cloud.firestore {
     // PING COLLECTION (Healthcheck)
     // ─────────────────────────────────────────────────────────────
     match /_ping/{doc} {
-      allow read: if isAuthenticated();
+      allow read: if true;
       allow write: if false;
     }
 

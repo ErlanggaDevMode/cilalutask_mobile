@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+export 'package:firebase_auth/firebase_auth.dart'
+    show FirebaseAuthException, User, UserCredential;
+
 /// Secure authentication service wrapping Firebase Authentication.
 /// Handles login, registration, logout, and session state.
 /// Ensures passwords are never logged, stored in local storage, or exposed.
