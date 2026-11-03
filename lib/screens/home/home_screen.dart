@@ -16,7 +16,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = AppStateScope.of(context);
-    final user = state.currentUser;
     final tasks = state.tasks;
     final activities = state.activities;
 
@@ -177,7 +176,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'Efisiensi Tim: ${user.teamEfficiencyPercent}%',
+                        'Efisiensi Tim: ${metrics.total > 0 ? metrics.completionRate.round() : 100}%',
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -455,7 +454,9 @@ class HomeScreen extends StatelessWidget {
             _buildMetricCard(
               title: 'Tugas Aktif',
               count: '$activeCount',
-              subtext: '4 tugas baru',
+              subtext: activeCount > 0
+                  ? '$activeCount tugas berjalan'
+                  : '0 tugas aktif',
               subtextColor: AppColors.primary,
               icon: Icons.calendar_today_rounded,
               iconBg: AppColors.primaryLight,
@@ -508,26 +509,26 @@ class HomeScreen extends StatelessWidget {
 
         // 4. Mendekati Batas Waktu
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
-              children: [
-                Icon(
-                  Icons.calendar_month_rounded,
-                  size: 16,
-                  color: AppColors.danger,
-                ),
-                SizedBox(width: 6),
-                Text(
-                  'Mendekati Batas Waktu',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
+            const Icon(
+              Icons.calendar_month_rounded,
+              size: 16,
+              color: AppColors.danger,
             ),
+            const SizedBox(width: 6),
+            const Expanded(
+              child: Text(
+                'Mendekati Batas Waktu',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
             InkWell(
               onTap: () => state.setTab(1),
               child: Text(
@@ -1028,6 +1029,8 @@ class HomeScreen extends StatelessWidget {
             ),
             Text(
               subtext,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,

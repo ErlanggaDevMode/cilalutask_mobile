@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Assignee {
   final String id;
   final String name;
@@ -74,45 +72,6 @@ class Assignee {
       email: map['email'] as String? ?? '',
     );
   }
-}
-
-class EmployeePerformance {
-  final String id;
-  final int rank;
-  final String name;
-  final String avatar;
-  final String division;
-  final int completedTasks;
-  final int delayedTasks;
-  final int score;
-  final String
-  statusTag; // 'SANGAT BAIK' | 'OPTIMAL' | 'STABIL' | 'PERLU PENINGKATAN'
-  final bool isStar;
-
-  const EmployeePerformance({
-    required this.id,
-    required this.rank,
-    required this.name,
-    required this.avatar,
-    required this.division,
-    required this.completedTasks,
-    required this.delayedTasks,
-    required this.score,
-    required this.statusTag,
-    this.isStar = false,
-  });
-}
-
-class DivisionProductivity {
-  final String name;
-  final int percent;
-  final Color color;
-
-  const DivisionProductivity({
-    required this.name,
-    required this.percent,
-    required this.color,
-  });
 }
 
 class CurrentUser {

@@ -315,6 +315,7 @@ class AppStateController extends ChangeNotifier {
       _companyController.setCurrentCompany(foundCompany);
       _currentUserRole = UserRole.admin;
       _currentEmployee = null;
+      await _loadCompanyData(foundCompany.code);
     } else {
       if (foundCompany.code != _companyController.currentCompany.code) {
         _companyController.setCurrentCompany(foundCompany);
@@ -763,30 +764,32 @@ class AppStateController extends ChangeNotifier {
       newMsg,
     );
 
-    final channelName = channelId != null
-        ? (_chatController.channels
-              .firstWhere(
-                (c) => c.id == channelId,
-                orElse: () => _chatController.channels.first,
-              )
-              .name)
-        : 'Pesan Langsung';
+    // Direct messages (pesan langsung) bersifat privat seperti WhatsApp dan TIDAK ditampilkan di Pusat Notifikasi.
+    // Hanya pesan di channel grup tim/divisi yang mengirimkan notifikasi.
+    if (channelId != null && channelId.trim().isNotEmpty) {
+      final channelName = _chatController.channels
+          .firstWhere(
+            (c) => c.id == channelId,
+            orElse: () => _chatController.channels.first,
+          )
+          .name;
 
-    pushNotification(
-      NotificationItem(
-        id: 'notif-chat-${DateTime.now().millisecondsSinceEpoch}',
-        title: '💬 $currentUserName di $channelName',
-        description: content.trim(),
-        time: 'Baru saja',
-        type: 'chat',
-        senderName: currentUserName,
-        senderAvatar: currentUserAvatar,
-        targetTab: 4,
-        targetId: channelId ?? receiverId,
-        timestamp: DateTime.now(),
-      ),
-      showBanner: true,
-    );
+      pushNotification(
+        NotificationItem(
+          id: 'notif-chat-${DateTime.now().millisecondsSinceEpoch}',
+          title: '💬 $currentUserName di $channelName',
+          description: content.trim(),
+          time: 'Baru saja',
+          type: 'chat',
+          senderName: currentUserName,
+          senderAvatar: currentUserAvatar,
+          targetTab: 4,
+          targetId: channelId,
+          timestamp: DateTime.now(),
+        ),
+        showBanner: true,
+      );
+    }
   }
 
   Future<void> deleteChatMessage(String messageId) async {
@@ -917,44 +920,6 @@ class AppStateController extends ChangeNotifier {
     _notificationController.setNotifications(List.from(kNotificationsData));
     _activities = List.from(kInitialActivities);
     notifyListeners();
-  }
-
-  int _simIndex = 0;
-  void simulateIncomingRealtimeEvent() {
-    final now = DateTime.now();
-    final timeStr =
-        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-
-    final events = [
-      NotificationItem(
-        id: 'sim-${now.millisecondsSinceEpoch}-1',
-        title: '💬 Pesan Masuk (#it-tech-core)',
-        description: 'Kevin M: Database transaksi Aurora berhasil sinkron tanpa downtime.',
-        time: 'Baru saja ($timeStr)',
-        type: 'chat',
-        senderName: 'Kevin Maulana',
-        senderAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=256',
-        targetTab: 4,
-        targetId: 'ch-it',
-        timestamp: now,
-      ),
-      NotificationItem(
-        id: 'sim-${now.millisecondsSinceEpoch}-2',
-        title: '📋 Update Subtask Operasional',
-        description:
-            'Budi Santoso telah menyelesaikan checklist Pallet B4 di Cikarang.',
-        time: 'Baru saja ($timeStr)',
-        type: 'task',
-        senderName: 'Budi Santoso',
-        senderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=256',
-        targetTab: 1,
-        timestamp: now,
-      ),
-    ];
-
-    final event = events[_simIndex % events.length];
-    _simIndex++;
-    pushNotification(event, showBanner: true);
   }
 
   bool _isDisposed = false;

@@ -38,6 +38,18 @@ void main() {
       // ───────────────────────────────────────────────────────────────────────
       // Step 2: Sign In as Admin
       // ───────────────────────────────────────────────────────────────────────
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Contoh: PROPERTI-01'),
+        'CILALU-88',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Email'),
+        'sarah.pratama@cilulataks.id',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Password'),
+        'password123',
+      );
       final loginBtn = find.text('Masuk sebagai Admin');
       await tester.ensureVisible(loginBtn);
       await tester.tap(loginBtn);

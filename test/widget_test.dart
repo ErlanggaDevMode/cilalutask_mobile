@@ -47,7 +47,19 @@ void main() {
     await tester.pumpWidget(CilalutaskApp(controller: controller));
     await tester.pumpAndSettle();
 
-    // Click login as Admin
+    // Fill credentials and click login as Admin
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Contoh: PROPERTI-01'),
+      'CILALU-88',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Email'),
+      'sarah.pratama@cilulataks.id',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Password'),
+      'password123',
+    );
     final loginAdminFinder = find.text('Masuk sebagai Admin');
     expect(loginAdminFinder, findsOneWidget);
     await tester.ensureVisible(loginAdminFinder);
@@ -84,12 +96,21 @@ void main() {
     await tester.pumpAndSettle();
 
     // Switch to Karyawan role and login
-    final userRoleFinder = find.text('User (Karyawan)');
+    final userRoleFinder = find.text('User');
     expect(userRoleFinder, findsOneWidget);
     await tester.ensureVisible(userRoleFinder);
     await tester.pumpAndSettle();
     await tester.tap(userRoleFinder);
     await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Contoh: PROPERTI-01'),
+      'CILALU-88',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Password'),
+      'password123',
+    );
 
     final loginUserFinder = find.text('Masuk sebagai Karyawan');
     expect(loginUserFinder, findsOneWidget);
@@ -196,6 +217,18 @@ void main() {
     await tester.pumpAndSettle();
 
     // Login as Admin
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Contoh: PROPERTI-01'),
+      'CILALU-88',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Email'),
+      'sarah.pratama@cilulataks.id',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Password'),
+      'password123',
+    );
     final loginAdminFinder = find.text('Masuk sebagai Admin');
     await tester.ensureVisible(loginAdminFinder);
     await tester.tap(loginAdminFinder);

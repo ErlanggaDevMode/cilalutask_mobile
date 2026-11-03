@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../models/sop.dart';
+import '../../state/app_state_scope.dart';
 
 class UploadSopBottomSheet extends StatefulWidget {
   final void Function(SOPDocument newSop) onAddSop;
@@ -65,6 +66,11 @@ class _UploadSopBottomSheetState extends State<UploadSopBottomSheet> {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() => _isSubmitting = true);
       try {
+        final appState = AppStateScope.maybeOf(context);
+        final totalEmployees =
+            (appState != null && appState.employees.isNotEmpty)
+            ? appState.employees.length
+            : (appState?.isBlankMode == true ? 1 : 6);
         final now = DateTime.now().millisecondsSinceEpoch;
         final newDoc = SOPDocument(
           id: 'sop-$now',
@@ -84,7 +90,7 @@ class _UploadSopBottomSheetState extends State<UploadSopBottomSheet> {
           isUrgentMandatory: _isUrgentMandatory,
           isNewUpdate: true,
           readProgressPercent: 0,
-          readTeamCount: '0/34 Tim',
+          readTeamCount: '0/$totalEmployees Tim',
           complianceRatioText: '0% Karyawan terverifikasi',
           contentSections: [
             ContentSection(

@@ -185,7 +185,7 @@ void main() {
           // Enter valid company code first
           final companyCodeField = find.widgetWithText(
             TextField,
-            'Contoh: CILALU-88',
+            'Contoh: PROPERTI-01',
           );
           await tester.enterText(companyCodeField, 'CILALU-88');
 
@@ -298,6 +298,18 @@ void main() {
           await tester.pumpAndSettle();
 
           // Login as Admin
+          await tester.enterText(
+            find.widgetWithText(TextField, 'Contoh: PROPERTI-01'),
+            'CILALU-88',
+          );
+          await tester.enterText(
+            find.widgetWithText(TextField, 'Email'),
+            'sarah.pratama@cilulataks.id',
+          );
+          await tester.enterText(
+            find.widgetWithText(TextField, 'Password'),
+            'password123',
+          );
           final loginAdminFinder = find.text('Masuk sebagai Admin');
           await tester.ensureVisible(loginAdminFinder);
           await tester.tap(loginAdminFinder);
@@ -352,6 +364,18 @@ void main() {
           await tester.pumpAndSettle();
 
           // Login as Admin
+          await tester.enterText(
+            find.widgetWithText(TextField, 'Contoh: PROPERTI-01'),
+            'CILALU-88',
+          );
+          await tester.enterText(
+            find.widgetWithText(TextField, 'Email'),
+            'sarah.pratama@cilulataks.id',
+          );
+          await tester.enterText(
+            find.widgetWithText(TextField, 'Password'),
+            'password123',
+          );
           final loginAdminFinder = find.text('Masuk sebagai Admin');
           await tester.ensureVisible(loginAdminFinder);
           await tester.tap(loginAdminFinder);
@@ -406,8 +430,17 @@ void main() {
           await tester.pumpAndSettle();
 
           // Select Karyawan role and login
-          await tester.tap(find.text('User (Karyawan)'));
+          await tester.tap(find.text('User'));
           await tester.pumpAndSettle();
+
+          await tester.enterText(
+            find.widgetWithText(TextField, 'Contoh: PROPERTI-01'),
+            'CILALU-88',
+          );
+          await tester.enterText(
+            find.widgetWithText(TextField, 'Password'),
+            'password123',
+          );
 
           final loginUserFinder = find.text('Masuk sebagai Karyawan');
           await tester.ensureVisible(loginUserFinder);
@@ -447,6 +480,18 @@ void main() {
         expect(tester.takeException(), isNull);
 
         // Login as Admin
+        await tester.enterText(
+          find.widgetWithText(TextField, 'Contoh: PROPERTI-01'),
+          'CILALU-88',
+        );
+        await tester.enterText(
+          find.widgetWithText(TextField, 'Email'),
+          'sarah.pratama@cilulataks.id',
+        );
+        await tester.enterText(
+          find.widgetWithText(TextField, 'Password'),
+          'password123',
+        );
         final loginAdminFinder = find.text('Masuk sebagai Admin');
         await tester.ensureVisible(loginAdminFinder);
         await tester.tap(loginAdminFinder);

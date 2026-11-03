@@ -62,6 +62,8 @@ class SopController extends ChangeNotifier {
       final loaded = await _repository.getSops(companyCode);
       if (loaded.isNotEmpty || companyCode != 'CILALU-88') {
         _sops = loaded;
+      } else if (_sops.isEmpty) {
+        _sops = List.from(kInitialSops);
       }
     } catch (e) {
       _errorMessage = e.toString();

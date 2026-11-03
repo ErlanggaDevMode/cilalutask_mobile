@@ -24,15 +24,30 @@ class NotificationController extends ChangeNotifier {
     CilaluRepository? repository,
     List<NotificationItem>? initialNotifications,
   }) : _repository = repository ?? CilaluRepository() {
-    if (initialNotifications != null) {
-      _notifications = List.from(initialNotifications);
-    }
+    final source = initialNotifications ?? kNotificationsData;
+    _notifications = source.where((n) => !_isDirectMessage(n)).toList();
   }
 
-  List<NotificationItem> get notifications => List.unmodifiable(_notifications);
+  static bool _isDirectMessage(NotificationItem n) {
+    final title = n.title.toLowerCase();
+    final type = n.type.toLowerCase();
+    final targetId = n.targetId?.toLowerCase() ?? '';
+    return title.contains('pesan langsung') ||
+        title.contains('direct message') ||
+        title.contains('direct') ||
+        targetId == 'direct_chat' ||
+        targetId.startsWith('direct') ||
+        targetId.startsWith('dm') ||
+        type == 'direct_chat' ||
+        type == 'direct' ||
+        type == 'dm';
+  }
+
+  List<NotificationItem> get notifications =>
+      List.unmodifiable(_notifications.where((n) => !_isDirectMessage(n)));
   NotificationItem? get activeInAppNotification => _activeInAppNotification;
   int get unreadNotificationsCount =>
-      _notifications.where((n) => n.unread).length;
+      notifications.where((n) => n.unread).length;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
@@ -45,7 +60,7 @@ class NotificationController extends ChangeNotifier {
 
   /// Sets notification list directly (e.g. for reset or mock initialization).
   void setNotifications(List<NotificationItem> items) {
-    _notifications = List.from(items);
+    _notifications = items.where((n) => !_isDirectMessage(n)).toList();
     notifyListeners();
   }
 
@@ -68,7 +83,7 @@ class NotificationController extends ChangeNotifier {
     try {
       final loaded = await _repository.getNotifications(companyCode);
       if (loaded.isNotEmpty || companyCode != 'CILALU-88') {
-        _notifications = loaded;
+        _notifications = loaded.where((n) => !_isDirectMessage(n)).toList();
       }
     } catch (e) {
       _errorMessage = e.toString();
@@ -88,7 +103,7 @@ class NotificationController extends ChangeNotifier {
       notifs,
     ) {
       if (notifs.isNotEmpty) {
-        _notifications = notifs;
+        _notifications = notifs.where((n) => !_isDirectMessage(n)).toList();
         notifyListeners();
       }
     }, onError: (e) => debugPrint('Notification subscription error: $e'));
@@ -107,6 +122,11 @@ class NotificationController extends ChangeNotifier {
     NotificationItem item, {
     bool showBanner = true,
   }) {
+    // Direct messages (pesan langsung) 100% tidak boleh masuk ke Pusat Notifikasi
+    if (_isDirectMessage(item)) {
+      return;
+    }
+
     _notifications = [item, ..._notifications];
 
     if (showBanner) {

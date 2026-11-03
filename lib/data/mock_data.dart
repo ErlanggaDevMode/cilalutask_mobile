@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
-
 import '../models/employee.dart';
 import '../models/task.dart';
 import '../models/sop.dart';
 import '../models/activity.dart';
 import '../models/notification_item.dart';
-import '../core/theme/app_colors.dart';
 
 final CurrentUser kCurrentUser = CurrentUser(
   name: 'Sarah Pratama',
@@ -416,9 +413,9 @@ final List<SOPDocument> kInitialSops = [
     title: 'Penanganan Komplain Pelanggan Prioritas',
     category: 'Customer Service',
     version: 'v2.4',
-    readProgressPercent: 94,
-    complianceRatioText: '94% Karyawan sudah membaca & menyetujui',
-    readTeamCount: '32/34 Tim',
+    readProgressPercent: 83,
+    complianceRatioText: '83% Karyawan sudah membaca & menyetujui',
+    readTeamCount: '5/6 Tim',
     lastUpdatedText: 'Perbaruan: 3 Mei 2025',
     description: 'Standar penanganan tiket eskalasi pelanggan korporat Platinum dengan jaminan SLA response time di bawah 15 menit.',
     isBookmarked: false,
@@ -534,77 +531,6 @@ final List<ActivityItem> kInitialActivities = [
     timeAgo: '45 mnt lalu',
     department: 'Divisi Finance',
     type: 'task',
-  ),
-];
-
-final List<EmployeePerformance> kEmployeePerformance = [
-  const EmployeePerformance(
-    id: 'perf-1',
-    rank: 1,
-    name: 'Ahmad Fauzi',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=256',
-    division: 'Operasional',
-    completedTasks: 28,
-    delayedTasks: 0,
-    score: 98,
-    statusTag: 'SANGAT BAIK',
-    isStar: true,
-  ),
-  const EmployeePerformance(
-    id: 'perf-2',
-    rank: 2,
-    name: 'Rian Dermawan',
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=256',
-    division: 'Finance & Akuntansi',
-    completedTasks: 22,
-    delayedTasks: 0,
-    score: 96,
-    statusTag: 'SANGAT BAIK',
-  ),
-  const EmployeePerformance(
-    id: 'perf-3',
-    rank: 3,
-    name: 'Nadia Salsabila',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
-    division: 'Pemasaran',
-    completedTasks: 24,
-    delayedTasks: 1,
-    score: 94,
-    statusTag: 'OPTIMAL',
-  ),
-  const EmployeePerformance(
-    id: 'perf-4',
-    rank: 4,
-    name: 'Kevin Maulana',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=256',
-    division: 'IT & Development',
-    completedTasks: 19,
-    delayedTasks: 2,
-    score: 89,
-    statusTag: 'STABIL',
-  ),
-];
-
-final List<DivisionProductivity> kDivisionProductivity = [
-  const DivisionProductivity(
-    name: 'Operasional',
-    percent: 95,
-    color: AppColors.success,
-  ),
-  const DivisionProductivity(
-    name: 'Finance & Akuntansi',
-    percent: 94,
-    color: Color(0xFFA5B4FC),
-  ),
-  const DivisionProductivity(
-    name: 'IT & Development',
-    percent: 91,
-    color: AppColors.primary,
-  ),
-  const DivisionProductivity(
-    name: 'Pemasaran',
-    percent: 89,
-    color: AppColors.primaryDark,
   ),
 ];
 

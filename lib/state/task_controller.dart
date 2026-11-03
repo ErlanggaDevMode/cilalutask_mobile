@@ -61,6 +61,8 @@ class TaskController extends ChangeNotifier {
       final loaded = await _repository.getTasks(companyCode);
       if (loaded.isNotEmpty || companyCode != 'CILALU-88') {
         _tasks = loaded;
+      } else if (_tasks.isEmpty) {
+        _tasks = List.from(kInitialTasks);
       }
     } catch (e) {
       _errorMessage = e.toString();

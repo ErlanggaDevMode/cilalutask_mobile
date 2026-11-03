@@ -150,6 +150,8 @@ class CompanyController extends ChangeNotifier {
       final loadedMembers = await _repository.getMembers(companyCode);
       if (loadedMembers.isNotEmpty || companyCode != 'CILALU-88') {
         _employees = loadedMembers;
+      } else if (_employees.isEmpty) {
+        _employees = List.from(kEmployees);
       }
 
       final loadedRequests = await _repository.getJoinRequests(companyCode);

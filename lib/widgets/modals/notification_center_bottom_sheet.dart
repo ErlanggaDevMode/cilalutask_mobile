@@ -70,8 +70,20 @@ class _NotificationCenterBottomSheetState
   @override
   Widget build(BuildContext context) {
     final state = AppStateScope.of(context);
-    final allNotifs = state.notifications;
-    final unreadCount = state.unreadNotificationsCount;
+    final allNotifs = state.notifications.where((n) {
+      final title = n.title.toLowerCase();
+      final type = n.type.toLowerCase();
+      final targetId = n.targetId?.toLowerCase() ?? '';
+      return !title.contains('pesan langsung') &&
+          !title.contains('direct') &&
+          targetId != 'direct_chat' &&
+          !targetId.startsWith('direct') &&
+          !targetId.startsWith('dm') &&
+          type != 'direct_chat' &&
+          type != 'direct' &&
+          type != 'dm';
+    }).toList();
+    final unreadCount = allNotifs.where((n) => n.unread).length;
 
     final filteredNotifs = allNotifs.where((n) {
       if (_selectedFilter == 'unread') {
