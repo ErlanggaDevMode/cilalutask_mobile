@@ -261,9 +261,20 @@ class CilaluRepository {
     return cached ?? [];
   }
 
-  Future<void> createSop(String companyCode, SOPDocument sop) async {
-    final local = await _storage.loadSops(companyCode) ?? [];
-    await _storage.saveSops(companyCode, [sop, ...local]);
+  Future<void> createSop(
+    String companyCode,
+    SOPDocument sop, {
+    List<SOPDocument>? currentList,
+  }) async {
+    if (currentList != null) {
+      await _storage.saveSops(companyCode, currentList);
+    } else {
+      final local = await _storage.loadSops(companyCode) ?? [];
+      await _storage.saveSops(companyCode, [
+        sop,
+        ...local.where((s) => s.id != sop.id),
+      ]);
+    }
 
     if (_firestore.isAvailable) {
       try {
@@ -278,10 +289,18 @@ class CilaluRepository {
     }
   }
 
-  Future<void> updateSop(String companyCode, SOPDocument sop) async {
-    final local = await _storage.loadSops(companyCode) ?? [];
-    final updated = local.map((s) => s.id == sop.id ? sop : s).toList();
-    await _storage.saveSops(companyCode, updated);
+  Future<void> updateSop(
+    String companyCode,
+    SOPDocument sop, {
+    List<SOPDocument>? currentList,
+  }) async {
+    if (currentList != null) {
+      await _storage.saveSops(companyCode, currentList);
+    } else {
+      final local = await _storage.loadSops(companyCode) ?? [];
+      final updated = local.map((s) => s.id == sop.id ? sop : s).toList();
+      await _storage.saveSops(companyCode, updated);
+    }
 
     if (_firestore.isAvailable) {
       try {

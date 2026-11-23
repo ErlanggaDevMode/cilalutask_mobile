@@ -1,4 +1,4 @@
-# 🛡️ Panduan Pengujian & Quality Gates — CILALUTASK Mobile
+# 🛡️ Panduan Pengujian & Quality Gates — Cilulatask Mobile
 
 Dokumen ini mendefinisikan standar pengujian otomatis (*automated testing*), *quality gates*, serta panduan langkah demi langkah bagi pengembang untuk menjalankan pengujian lokal dan emulator.
 

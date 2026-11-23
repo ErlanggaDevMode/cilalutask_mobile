@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/custom_avatar.dart';
@@ -448,6 +451,9 @@ class ProfileBottomSheet extends StatelessWidget {
     String userName,
     String currentAvatar,
   ) {
+    String selectedAvatar = currentAvatar;
+    bool isPicking = false;
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -458,15 +464,50 @@ class ProfileBottomSheet extends StatelessWidget {
       builder: (bottomSheetContext) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            final urlController = TextEditingController(text: currentAvatar);
-            String selectedAvatar = currentAvatar;
-
-            final presetAvatars = [
-              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
-              'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=256',
-              'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=256',
-              'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=256',
-            ];
+            Future<void> pickFromGallery() async {
+              setModalState(() => isPicking = true);
+              try {
+                final file = await ImagePicker().pickImage(
+                  source: ImageSource.gallery,
+                  maxWidth: 256,
+                  maxHeight: 256,
+                  imageQuality: 75,
+                );
+                if (file == null) return;
+                final bytes = await file.readAsBytes();
+                if (bytes.length > 300 * 1024) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Ukuran foto terlalu besar (maks 300 KB).',
+                        ),
+                        backgroundColor: AppColors.danger,
+                      ),
+                    );
+                  }
+                  return;
+                }
+                final mime = file.mimeType ?? 'image/jpeg';
+                setModalState(() {
+                  selectedAvatar = 'data:$mime;base64,${base64Encode(bytes)}';
+                });
+              } catch (e) {
+                debugPrint('pickImage error: $e');
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Gagal membuka galeri. Coba restart aplikasi.',
+                      ),
+                      backgroundColor: AppColors.danger,
+                    ),
+                  );
+                }
+              } finally {
+                if (context.mounted) setModalState(() => isPicking = false);
+              }
+            }
 
             return Padding(
               padding: EdgeInsets.only(
@@ -495,7 +536,7 @@ class ProfileBottomSheet extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Ubah Foto Profil (Opsional)',
+                          'Ubah Foto Profil',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -515,182 +556,86 @@ class ProfileBottomSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
                     Center(
-                      child: Column(
-                        children: [
-                          CustomAvatar(
-                            imageUrl: selectedAvatar,
-                            fallbackText: userName,
-                            radius: 36,
-                            borderColor: AppColors.primary,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            selectedAvatar.isEmpty
-                                ? 'Pratinjau: Inisial Nama (${CustomAvatar.getInitials(userName)})'
-                                : 'Pratinjau: Foto Terpilih',
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: AppColors.textMuted,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Option 1: Gunakan Inisial Nama (Default)
-                    InkWell(
-                      onTap: () {
-                        setModalState(() {
-                          selectedAvatar = '';
-                          urlController.text = '';
-                        });
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: selectedAvatar.isEmpty
-                              ? AppColors.primaryLight
-                              : AppColors.surfaceSecondary,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: selectedAvatar.isEmpty
-                                ? AppColors.primary
-                                : AppColors.border,
-                          ),
-                        ),
-                        child: Row(
+                      child: GestureDetector(
+                        onTap: isPicking ? null : pickFromGallery,
+                        child: Stack(
+                          clipBehavior: Clip.none,
                           children: [
                             CustomAvatar(
-                              imageUrl: '',
+                              imageUrl: selectedAvatar,
                               fallbackText: userName,
-                              radius: 14,
+                              radius: 44,
+                              borderColor: AppColors.primary,
                             ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Gunakan Inisial Nama (Default)',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.textPrimary,
-                                    ),
+                            Positioned(
+                              right: -2,
+                              bottom: -2,
+                              child: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
                                   ),
-                                  Text(
-                                    'Menampilkan inisial ${CustomAvatar.getInitials(userName)} dengan gradasi modern.',
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
+                                ),
+                                child: isPicking
+                                    ? const SizedBox(
+                                        width: 14,
+                                        height: 14,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Icon(
+                                        Icons.camera_alt_rounded,
+                                        size: 14,
+                                        color: Colors.white,
+                                      ),
                               ),
                             ),
-                            if (selectedAvatar.isEmpty)
-                              const Icon(
-                                Icons.check_circle_rounded,
-                                color: AppColors.primary,
-                                size: 18,
-                              ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    const Text(
-                      'Pilih Dari Foto Rekomendasi:',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: presetAvatars.map((url) {
-                        final isChosen = selectedAvatar == url;
-                        return InkWell(
-                          onTap: () {
-                            setModalState(() {
-                              selectedAvatar = url;
-                              urlController.text = url;
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(24),
-                          child: Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: isChosen
-                                    ? AppColors.primary
-                                    : Colors.transparent,
-                                width: 2.5,
-                              ),
-                            ),
-                            child: CustomAvatar(
-                              imageUrl: url,
-                              fallbackText: userName,
-                              radius: 22,
-                            ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: isPicking ? null : pickFromGallery,
+                        icon: const Icon(Icons.photo_library_rounded, size: 18),
+                        label: const Text('Pilih Foto dari Galeri'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.primary,
+                          side: const BorderSide(color: AppColors.primary),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 14),
-                    const Text(
-                      'Atau Input Link Foto (URL Web):',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: urlController,
-                      style: const TextStyle(fontSize: 12),
-                      decoration: InputDecoration(
-                        hintText: 'https://images.unsplash.com/...',
-                        hintStyle: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textMuted,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: AppColors.border),
-                        ),
-                        suffixIcon: IconButton(
+                    if (selectedAvatar.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextButton.icon(
+                          onPressed: () =>
+                              setModalState(() => selectedAvatar = ''),
                           icon: const Icon(
-                            Icons.check_rounded,
+                            Icons.delete_outline_rounded,
                             size: 18,
-                            color: AppColors.primary,
                           ),
-                          onPressed: () {
-                            setModalState(() {
-                              selectedAvatar = urlController.text.trim();
-                            });
-                          },
+                          label: const Text('Hapus Foto'),
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.danger,
+                          ),
                         ),
                       ),
-                      onChanged: (val) {
-                        setModalState(() {
-                          selectedAvatar = val.trim();
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 18),
+                    ],
+                    const SizedBox(height: 14),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(

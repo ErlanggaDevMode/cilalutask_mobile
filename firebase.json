@@ -15,14 +15,14 @@
     "platforms": {
       "android": {
         "default": {
-          "projectId": "cilalutask",
+          "projectId": "Cilulatask",
           "appId": "1:444266460057:android:70dd1ec95ec31f2a959908",
           "fileOutput": "android/app/google-services.json"
         }
       },
       "dart": {
         "lib/firebase_options.dart": {
-          "projectId": "cilalutask",
+          "projectId": "Cilulatask",
           "configurations": {
             "android": "1:444266460057:android:70dd1ec95ec31f2a959908",
             "ios": "1:444266460057:ios:c5e988baa0c2a3c2959908",

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cilalutask_mobile/main.dart';
-import 'package:cilalutask_mobile/state/app_state_controller.dart';
-import 'package:cilalutask_mobile/models/user_role.dart';
-import 'package:cilalutask_mobile/models/notification_item.dart';
-import 'package:cilalutask_mobile/models/company.dart';
+import 'package:Cilulatask_mobile/main.dart';
+import 'package:Cilulatask_mobile/state/app_state_controller.dart';
+import 'package:Cilulatask_mobile/models/user_role.dart';
+import 'package:Cilulatask_mobile/models/notification_item.dart';
+import 'package:Cilulatask_mobile/models/company.dart';
 
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
   });
-  testWidgets('Cilalutask initial launch shows LoginScreen with 3 tabs', (
+  testWidgets('Cilulatask initial launch shows LoginScreen with 3 tabs', (
     WidgetTester tester,
   ) async {
     tester.view.physicalSize = const Size(800, 1200);
@@ -22,11 +22,11 @@ void main() {
     });
 
     final controller = AppStateController();
-    await tester.pumpWidget(CilalutaskApp(controller: controller));
+    await tester.pumpWidget(CilulataskApp(controller: controller));
     await tester.pumpAndSettle();
 
     // Verify brand header and login tabs exist
-    expect(find.text('CILALUTASK'), findsOneWidget);
+    expect(find.text('Cilulatask'), findsOneWidget);
     expect(find.text('Masuk'), findsWidgets);
     expect(find.text('Daftar PT'), findsWidgets);
     expect(find.text('Gabung Tim'), findsWidgets);
@@ -44,7 +44,7 @@ void main() {
     });
 
     final controller = AppStateController();
-    await tester.pumpWidget(CilalutaskApp(controller: controller));
+    await tester.pumpWidget(CilulataskApp(controller: controller));
     await tester.pumpAndSettle();
 
     // Fill credentials and click login as Admin
@@ -92,7 +92,7 @@ void main() {
     });
 
     final controller = AppStateController();
-    await tester.pumpWidget(CilalutaskApp(controller: controller));
+    await tester.pumpWidget(CilulataskApp(controller: controller));
     await tester.pumpAndSettle();
 
     // Switch to Karyawan role and login
@@ -213,7 +213,7 @@ void main() {
     });
 
     final controller = AppStateController();
-    await tester.pumpWidget(CilalutaskApp(controller: controller));
+    await tester.pumpWidget(CilulataskApp(controller: controller));
     await tester.pumpAndSettle();
 
     // Login as Admin

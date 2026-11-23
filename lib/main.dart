@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
+import 'core/assets/Cilalutask_logo_data.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/main_navigation_screen.dart';
@@ -11,6 +12,7 @@ import 'state/app_state_scope.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await precacheLogoBytes();
 
   try {
     await Firebase.initializeApp(
@@ -23,24 +25,24 @@ Future<void> main() async {
   final appStateController = AppStateController();
   await appStateController.initStorage();
 
-  runApp(CilalutaskApp(controller: appStateController));
+  runApp(CilulataskApp(controller: appStateController));
 }
 
-class CilalutaskApp extends StatefulWidget {
+class CilulataskApp extends StatefulWidget {
   final AppStateController controller;
   final bool showSplash;
 
-  const CilalutaskApp({
+  const CilulataskApp({
     super.key,
     required this.controller,
     this.showSplash = true,
   });
 
   @override
-  State<CilalutaskApp> createState() => _CilalutaskAppState();
+  State<CilulataskApp> createState() => _CilulataskAppState();
 }
 
-class _CilalutaskAppState extends State<CilalutaskApp> {
+class _CilulataskAppState extends State<CilulataskApp> {
   late bool _isSplashCompleted;
 
   @override
@@ -57,7 +59,7 @@ class _CilalutaskAppState extends State<CilalutaskApp> {
         listenable: widget.controller,
         builder: (context, _) {
           return MaterialApp(
-            title: 'Cilalutask Mobile',
+            title: 'Cilulatask Mobile',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             home: !_isSplashCompleted

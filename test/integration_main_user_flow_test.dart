@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cilalutask_mobile/main.dart';
-import 'package:cilalutask_mobile/state/app_state_controller.dart';
-import 'package:cilalutask_mobile/models/user_role.dart';
-import 'package:cilalutask_mobile/models/task.dart';
-import 'package:cilalutask_mobile/models/employee.dart';
+import 'package:Cilulatask_mobile/main.dart';
+import 'package:Cilulatask_mobile/state/app_state_controller.dart';
+import 'package:Cilulatask_mobile/models/user_role.dart';
+import 'package:Cilulatask_mobile/models/task.dart';
+import 'package:Cilulatask_mobile/models/employee.dart';
 
 void main() {
   setUp(() {
@@ -25,14 +25,14 @@ void main() {
       final controller = AppStateController();
       addTearDown(() => controller.dispose());
 
-      await tester.pumpWidget(CilalutaskApp(controller: controller));
+      await tester.pumpWidget(CilulataskApp(controller: controller));
       await tester.pumpAndSettle();
 
       // ───────────────────────────────────────────────────────────────────────
       // Step 1: Initial Launch (Unauthenticated State)
       // ───────────────────────────────────────────────────────────────────────
       expect(controller.isAuthenticated, isFalse);
-      expect(find.text('CILALUTASK'), findsOneWidget);
+      expect(find.text('Cilulatask'), findsOneWidget);
       expect(find.text('Masuk sebagai Admin'), findsOneWidget);
 
       // ───────────────────────────────────────────────────────────────────────
@@ -155,7 +155,7 @@ void main() {
       // Step 8: Logout
       // ───────────────────────────────────────────────────────────────────────
       await controller.logout();
-      await tester.pumpWidget(CilalutaskApp(controller: controller));
+      await tester.pumpWidget(CilulataskApp(controller: controller));
       await tester.pumpAndSettle();
 
       expect(controller.isAuthenticated, isFalse);

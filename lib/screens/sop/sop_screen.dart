@@ -1,10 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/report_and_sop_exporter.dart';
 import '../../core/widgets/app_confirm_dialog.dart';
 import '../../core/widgets/app_empty_state.dart';
+import '../../models/sop.dart';
+import '../../state/app_state_controller.dart';
 import '../../state/app_state_scope.dart';
 import '../../widgets/modals/sop_detail_bottom_sheet.dart';
 import '../../widgets/modals/upload_sop_bottom_sheet.dart';
@@ -138,6 +142,18 @@ class _SopScreenState extends State<SopScreen> {
       filteredSops.sort(
         (a, b) => (a.duration ?? '').compareTo(b.duration ?? ''),
       );
+    } else if (_sortOrder == 'Terpopuler') {
+      filteredSops.sort(
+        (a, b) =>
+            (b.readProgressPercent ?? 0).compareTo(a.readProgressPercent ?? 0),
+      );
+    } else if (_sortOrder == 'Versi Terbaru') {
+      filteredSops.sort((a, b) {
+        if (a.isNewUpdate != b.isNewUpdate) {
+          return a.isNewUpdate ? -1 : 1;
+        }
+        return b.version.compareTo(a.version);
+      });
     }
 
     return ListView(
@@ -177,11 +193,19 @@ class _SopScreenState extends State<SopScreen> {
             Row(
               children: [
                 _buildHeaderIconButton(
-                  icon: Icons.bookmark_border_rounded,
+                  icon: _bookmarkOnly
+                      ? Icons.bookmark_rounded
+                      : Icons.bookmark_border_rounded,
+                  isActive: _bookmarkOnly,
                   onTap: () {
+                    setState(() => _bookmarkOnly = !_bookmarkOnly);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Menampilkan SOP tersimpan.'),
+                      SnackBar(
+                        content: Text(
+                          _bookmarkOnly
+                              ? 'Menampilkan SOP tersimpan (Bookmark).'
+                              : 'Menampilkan seluruh dokumen SOP.',
+                        ),
                         behavior: SnackBarBehavior.floating,
                       ),
                     );
@@ -190,14 +214,7 @@ class _SopScreenState extends State<SopScreen> {
                 const SizedBox(width: 6),
                 _buildHeaderIconButton(
                   icon: Icons.history_rounded,
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Menampilkan riwayat revisi SOP.'),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  },
+                  onTap: () => _showRevisionHistorySheet(context, state),
                 ),
               ],
             ),
@@ -407,10 +424,19 @@ class _SopScreenState extends State<SopScreen> {
                     context,
                     onAddSop: (newSop) {
                       state.addSop(newSop);
+                      if (_selectedCategory != 'Semua' &&
+                          !newSop.category.toLowerCase().contains(
+                            _selectedCategory.toLowerCase().substring(0, 5),
+                          )) {
+                        setState(() => _selectedCategory = 'Semua');
+                      }
+                      if (_bookmarkOnly) {
+                        setState(() => _bookmarkOnly = false);
+                      }
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            'Dokumen "${newSop.title}" berhasil diterbitkan!',
+                            'Dokumen "${newSop.title}" (${newSop.code}) berhasil diterbitkan!',
                           ),
                           backgroundColor: AppColors.primaryDark,
                           behavior: SnackBarBehavior.floating,
@@ -1055,13 +1081,30 @@ class _SopScreenState extends State<SopScreen> {
                               size: 16,
                               color: AppColors.textSecondary,
                             ),
+                            tooltip: 'Bagikan & Unduh SOP',
                             onPressed: () {
+                              final summary =
+                                  ReportAndSopExporter.buildSopTextSummary(
+                                    sop,
+                                    companyName: state.currentCompany.name,
+                                  );
+                              Clipboard.setData(ClipboardData(text: summary));
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Tautan dokumen ${sop.code} disalin ke papan klip!',
+                                    'Ringkasan & tautan ${sop.code} disalin ke papan klip!',
                                   ),
                                   behavior: SnackBarBehavior.floating,
+                                  action: SnackBarAction(
+                                    label: 'Unduh PDF',
+                                    textColor: const Color(0xFF6EE7B7),
+                                    onPressed: () {
+                                      ReportAndSopExporter.exportSopDocument(
+                                        sop,
+                                        companyName: state.currentCompany.name,
+                                      );
+                                    },
+                                  ),
                                 ),
                               );
                             },
@@ -1108,6 +1151,8 @@ class _SopScreenState extends State<SopScreen> {
                                 context,
                                 sop: sop,
                                 isAdmin: state.isAdmin,
+                                onRevise: () =>
+                                    _openReviseSop(context, state, sop),
                                 onDelete: () {
                                   state.deleteSop(sop.id);
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -1160,9 +1205,131 @@ class _SopScreenState extends State<SopScreen> {
     );
   }
 
+  void _openReviseSop(
+    BuildContext context,
+    AppStateController state,
+    SOPDocument sop,
+  ) {
+    UploadSopBottomSheet.show(
+      context,
+      initialSop: sop,
+      onAddSop: (updatedSop) {
+        state.updateSop(updatedSop);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Revisi "${updatedSop.title}" (${updatedSop.version}) berhasil disimpan!',
+            ),
+            backgroundColor: AppColors.primaryDark,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      },
+    );
+  }
+
+  void _showRevisionHistorySheet(
+    BuildContext context,
+    AppStateController state,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetCtx) {
+        final sops = state.sops;
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.history_rounded,
+                    color: AppColors.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      'Riwayat Versi & Revisi SOP',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, size: 20),
+                    onPressed: () => Navigator.of(sheetCtx).pop(),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
+              ),
+              const Divider(height: 12),
+              Flexible(
+                child: sops.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                          child: Text('Belum ada dokumen SOP terdaftar.'),
+                        ),
+                      )
+                    : ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: sops.length,
+                        separatorBuilder: (_, _) => const Divider(height: 1),
+                        itemBuilder: (_, idx) {
+                          final item = sops[idx];
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              '${item.code} (${item.version}) — ${item.title}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(
+                              '${item.lastUpdatedText} • ${item.fileInfo ?? item.category}',
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                            trailing: OutlinedButton(
+                              onPressed: () {
+                                Navigator.of(sheetCtx).pop();
+                                _openReviseSop(context, state, item);
+                              },
+                              style: OutlinedButton.styleFrom(
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                              ),
+                              child: const Text(
+                                'Revisi',
+                                style: TextStyle(fontSize: 11),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildHeaderIconButton({
     required IconData icon,
     required VoidCallback onTap,
+    bool isActive = false,
   }) {
     return InkWell(
       onTap: onTap,
@@ -1171,11 +1338,17 @@ class _SopScreenState extends State<SopScreen> {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isActive ? AppColors.primaryLight : Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(
+            color: isActive ? AppColors.primary : AppColors.border,
+          ),
         ),
-        child: Icon(icon, size: 18, color: AppColors.textSecondary),
+        child: Icon(
+          icon,
+          size: 18,
+          color: isActive ? AppColors.primary : AppColors.textSecondary,
+        ),
       ),
     );
   }

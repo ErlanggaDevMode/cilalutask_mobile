@@ -1,10 +1,10 @@
-# CILALUTASK Mobile (Dart & Flutter)
+# Cilulatask Mobile (Dart & Flutter)
 
 [![Release Candidate](https://img.shields.io/badge/Release%20Candidate-v1.0.0--rc1-brightgreen.svg)](RELEASE_NOTES.md)
 [![Quality Gates](https://img.shields.io/badge/Quality%20Gates-100%25%20Passed%20(88%2F88)-blue.svg)](TESTING_AND_QUALITY_GATES.md)
 [![Flutter](https://img.shields.io/badge/Flutter-3.47.2%20%7C%20Dart%203.13.2-02569B.svg)](https://flutter.dev)
 
-Aplikasi mobile korporat **CILALUTASK** untuk manajemen tugas operasional, verifikasi kepatuhan Standard Operating Procedure (SOP), pelaporan efisiensi tim, komunikasi chat multi-saluran, serta **arsitektur Multi-Perusahaan dengan Mode Data Bersih (Blank Slate) & Alur Persetujuan Karyawan (Admin Approval Workflow)**.
+Aplikasi mobile korporat **Cilulatask** untuk manajemen tugas operasional, verifikasi kepatuhan Standard Operating Procedure (SOP), pelaporan efisiensi tim, komunikasi chat multi-saluran, serta **arsitektur Multi-Perusahaan dengan Mode Data Bersih (Blank Slate) & Alur Persetujuan Karyawan (Admin Approval Workflow)**.
 
 ### 📚 Dokumentasi Release Candidate & Pengembang:
 - 🚀 [**RELEASE_NOTES.md**](RELEASE_NOTES.md) — Rangkuman fitur, bug fixes, dan langkah migrasi akun/data.
@@ -99,7 +99,7 @@ Aplikasi mobile korporat **CILALUTASK** untuk manajemen tugas operasional, verif
 
 ### 1. Masuk ke direktori mobile
 ```bash
-cd cilalutask_mobile
+cd Cilulatask_mobile
 ```
 
 ### 2. Unduh dependensi
@@ -133,7 +133,7 @@ flutter run -d chrome
 ## 🏛️ Struktur Arsitektur Codebase
 
 ```
-cilalutask_mobile/
+Cilulatask_mobile/
 ├── lib/
 │   ├── main.dart                          # Entry point aplikasi
 │   ├── core/
@@ -188,7 +188,7 @@ cilalutask_mobile/
 
 ## 🧪 Automated Testing & Quality Gates
 
-Cilalutask Mobile dilengkapi dengan rangkaian pengujian otomatis dan quality gates komprehensif (Unit, Widget, Integration, Security Rules, Linter, dan Formatter).
+Cilulatask Mobile dilengkapi dengan rangkaian pengujian otomatis dan quality gates komprehensif (Unit, Widget, Integration, Security Rules, Linter, dan Formatter).
 
 Panduan lengkap mengenai inventaris pengujian, perintah eksekusi lokal, dan cara menjalankan Firebase Emulator dapat dilihat pada:
 👉 [**TESTING_AND_QUALITY_GATES.md**](TESTING_AND_QUALITY_GATES.md)

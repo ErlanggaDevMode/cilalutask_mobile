@@ -17,6 +17,7 @@ class ReportsScreen extends StatefulWidget {
 class _ReportsScreenState extends State<ReportsScreen> {
   late String _selectedTimeRange;
   late List<String> _timeRanges;
+  String _selectedDivision = 'Semua Divisi';
 
   @override
   void initState() {
@@ -31,12 +32,35 @@ class _ReportsScreenState extends State<ReportsScreen> {
   @override
   Widget build(BuildContext context) {
     final state = AppStateScope.of(context);
-    final metrics = TaskMetricsCalculator.computeMetrics(state.tasks);
+    var scopedTasks = state.tasks;
+
+    if (_selectedTimeRange.startsWith('Minggu Ini')) {
+      final weekly = scopedTasks.where((t) {
+        final dl = t.deadlineLabel.toLowerCase();
+        return t.isToday ||
+            t.isUrgentDeadline ||
+            dl.contains('hari') ||
+            dl.contains('besok') ||
+            dl.contains('minggu');
+      }).toList();
+      if (weekly.isNotEmpty) {
+        scopedTasks = weekly;
+      }
+    }
+
+    if (_selectedDivision != 'Semua Divisi') {
+      scopedTasks = TaskMetricsCalculator.filterTasks(
+        scopedTasks,
+        division: _selectedDivision,
+      );
+    }
+
+    final metrics = TaskMetricsCalculator.computeMetrics(scopedTasks);
     final divisionMetrics = TaskMetricsCalculator.computeDivisionProductivity(
       state.tasks,
     );
     final employeeRanks = TaskMetricsCalculator.computeEmployeePerformance(
-      state.tasks,
+      scopedTasks,
       state.employees,
     );
 
@@ -98,6 +122,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               onPressed: () => ExportReportBottomSheet.show(
                 context,
                 period: _selectedTimeRange,
+                initialDivisionFilter: _selectedDivision,
               ),
               icon: const Icon(Icons.download_rounded, size: 14),
               label: const Text('Ekspor', style: TextStyle(fontSize: 12)),
@@ -168,6 +193,61 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ),
               );
             }).toList(),
+          ),
+        ),
+        const SizedBox(height: 8),
+
+        // 2b. Division Filter Selector Pills
+        SizedBox(
+          height: 30,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children:
+                const [
+                  'Semua Divisi',
+                  'Operasional',
+                  'IT & Tech',
+                  'Pemasaran',
+                  'Finance & Akuntansi',
+                ].map((div) {
+                  final isSelected = _selectedDivision == div;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: InkWell(
+                      onTap: () => setState(() => _selectedDivision = div),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.primaryLight
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.border,
+                          ),
+                        ),
+                        child: Text(
+                          div,
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
           ),
         ),
         const SizedBox(height: 14),

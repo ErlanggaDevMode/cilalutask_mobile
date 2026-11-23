@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cilalutask_mobile/models/company.dart';
-import 'package:cilalutask_mobile/models/employee.dart';
-import 'package:cilalutask_mobile/models/task.dart';
-import 'package:cilalutask_mobile/models/user_role.dart';
-import 'package:cilalutask_mobile/services/auth_service.dart';
-import 'package:cilalutask_mobile/state/app_state_controller.dart';
+import 'package:Cilulatask_mobile/models/company.dart';
+import 'package:Cilulatask_mobile/models/employee.dart';
+import 'package:Cilulatask_mobile/models/task.dart';
+import 'package:Cilulatask_mobile/models/user_role.dart';
+import 'package:Cilulatask_mobile/services/auth_service.dart';
+import 'package:Cilulatask_mobile/state/app_state_controller.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -173,7 +173,7 @@ void main() {
         avatar: '',
         division: 'Operasional',
         role: 'Field Worker',
-        email: 'worker@cilalutask.id',
+        email: 'worker@Cilulatask.id',
       );
 
       // Login as regular employee

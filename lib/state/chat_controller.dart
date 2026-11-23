@@ -60,7 +60,7 @@ class ChatController extends ChangeNotifier {
       senderName: 'Sarah Pratama',
       senderAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=256',
       senderRole: 'Admin / Manager',
-      content: 'Selamat pagi seluruh tim Cilalutask! Mohon cek dashboard tugas masing-masing dan verifikasi kepatuhan SOP K3 terbaru.',
+      content: 'Selamat pagi seluruh tim Cilulatask! Mohon cek dashboard tugas masing-masing dan verifikasi kepatuhan SOP K3 terbaru.',
       time: '08:30',
       timestamp: DateTime.now().subtract(const Duration(hours: 2)),
     ),

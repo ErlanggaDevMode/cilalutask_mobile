@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:cilalutask_mobile/models/chat_model.dart';
-import 'package:cilalutask_mobile/state/chat_controller.dart';
+import 'package:Cilulatask_mobile/models/chat_model.dart';
+import 'package:Cilulatask_mobile/state/chat_controller.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

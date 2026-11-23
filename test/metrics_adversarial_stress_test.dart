@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:cilalutask_mobile/core/utils/task_metrics_calculator.dart';
-import 'package:cilalutask_mobile/models/task.dart';
-import 'package:cilalutask_mobile/models/employee.dart';
+import 'package:Cilulatask_mobile/core/utils/task_metrics_calculator.dart';
+import 'package:Cilulatask_mobile/models/task.dart';
+import 'package:Cilulatask_mobile/models/employee.dart';
 
 void main() {
   group('Adversarial Stress & Boundary Testing - TaskMetricsCalculator', () {
@@ -43,18 +43,17 @@ void main() {
         TaskMetricsCalculator.computeEmployeePerformance([], [dummyAssignee]),
         hasLength(1),
       );
-      final emptyEmpMetrics =
-          TaskMetricsCalculator.computeEmployeePerformance([], [dummyAssignee]);
+      final emptyEmpMetrics = TaskMetricsCalculator.computeEmployeePerformance(
+        [],
+        [dummyAssignee],
+      );
       expect(emptyEmpMetrics.first.assignedCount, 0);
       expect(emptyEmpMetrics.first.completedCount, 0);
       expect(emptyEmpMetrics.first.completionRate, 0.0);
       expect(emptyEmpMetrics.first.score, 0);
       expect(emptyEmpMetrics.first.statusBadge, 'Belum Ada Tugas');
 
-      expect(
-        TaskMetricsCalculator.computeEmployeePerformance([], []),
-        isEmpty,
-      );
+      expect(TaskMetricsCalculator.computeEmployeePerformance([], []), isEmpty);
       expect(TaskMetricsCalculator.filterTasks([]), isEmpty);
     });
 
@@ -164,27 +163,30 @@ void main() {
       expect(metrics.onTimeRate, 0.0);
     });
 
-    test('6. In-progress status with progressPercent >= 100 counts as completed', () {
-      final tasks = [
-        Task(
-          id: 'task-pct100',
-          title: 'Almost completed status mismatch',
-          description: 'Desc',
-          division: 'IT & Tech',
-          priority: PriorityType.medium,
-          status: TaskStatus.inProgress,
-          deadlineLabel: 'Besok',
-          subtasks: const [],
-          assignee: dummyAssignee,
-          progressPercent: 100,
-        ),
-      ];
+    test(
+      '6. In-progress status with progressPercent >= 100 counts as completed',
+      () {
+        final tasks = [
+          Task(
+            id: 'task-pct100',
+            title: 'Almost completed status mismatch',
+            description: 'Desc',
+            division: 'IT & Tech',
+            priority: PriorityType.medium,
+            status: TaskStatus.inProgress,
+            deadlineLabel: 'Besok',
+            subtasks: const [],
+            assignee: dummyAssignee,
+            progressPercent: 100,
+          ),
+        ];
 
-      final metrics = TaskMetricsCalculator.computeMetrics(tasks);
-      expect(metrics.completed, 1);
-      expect(metrics.inProgress, 0);
-      expect(metrics.completionRate, 100.0);
-    });
+        final metrics = TaskMetricsCalculator.computeMetrics(tasks);
+        expect(metrics.completed, 1);
+        expect(metrics.inProgress, 0);
+        expect(metrics.completionRate, 100.0);
+      },
+    );
 
     test('7. High volume stress: 10,000 tasks compute in sub-second without overflow', () {
       final stopwatch = Stopwatch()..start();
@@ -197,15 +199,15 @@ void main() {
           division: i % 4 == 0
               ? 'IT & Tech'
               : i % 4 == 1
-                  ? 'Operasional'
-                  : i % 4 == 2
-                      ? 'Pemasaran'
-                      : 'Finance & Akuntansi',
+              ? 'Operasional'
+              : i % 4 == 2
+              ? 'Pemasaran'
+              : 'Finance & Akuntansi',
           priority: i % 3 == 0
               ? PriorityType.high
               : i % 3 == 1
-                  ? PriorityType.medium
-                  : PriorityType.low,
+              ? PriorityType.medium
+              : PriorityType.low,
           status: i % 2 == 0 ? TaskStatus.completed : TaskStatus.inProgress,
           deadlineLabel: '2026-11-30',
           isUrgentDeadline: i % 10 == 0,
@@ -224,10 +226,15 @@ void main() {
       expect(metrics.total, 10000);
       expect(metrics.completed, 5000);
       expect(metrics.completionRate, 50.0);
-      expect(metrics.total, metrics.completed + metrics.inProgress + metrics.notStarted);
+      expect(
+        metrics.total,
+        metrics.completed + metrics.inProgress + metrics.notStarted,
+      );
       expect(metrics.averageProgress, greaterThan(0.0));
 
-      final divMetrics = TaskMetricsCalculator.computeDivisionProductivity(largeTaskList);
+      final divMetrics = TaskMetricsCalculator.computeDivisionProductivity(
+        largeTaskList,
+      );
       expect(divMetrics.length, 4);
 
       final empMetrics = TaskMetricsCalculator.computeEmployeePerformance(
@@ -239,76 +246,87 @@ void main() {
       expect(empMetrics[1].assignedCount, 5000);
     });
 
-    test('8. Edge case: blank or whitespace division names fall back to Umum', () {
-      final tasks = [
-        Task(
-          id: 'task-empty-div',
-          title: 'No Div',
-          description: 'Desc',
-          division: '',
-          priority: PriorityType.low,
-          status: TaskStatus.completed,
-          deadlineLabel: 'Besok',
-          subtasks: const [],
-          assignee: dummyAssignee,
-          progressPercent: 100,
-        ),
-        Task(
-          id: 'task-ws-div',
-          title: 'Whitespace Div',
-          description: 'Desc',
-          division: '   ',
-          priority: PriorityType.low,
-          status: TaskStatus.notStarted,
-          deadlineLabel: 'Besok',
-          subtasks: const [],
-          assignee: dummyAssignee,
-          progressPercent: 0,
-        ),
-      ];
-
-      final divMetrics = TaskMetricsCalculator.computeDivisionProductivity(tasks);
-      expect(divMetrics.length, 1);
-      expect(divMetrics.first.name, 'Umum');
-      expect(divMetrics.first.total, 2);
-      expect(divMetrics.first.completed, 1);
-      expect(divMetrics.first.completionRate, 50.0);
-    });
-
-    test('9. Employee Performance: score clamping, rank ties, and status badges', () {
-      final tasks = <Task>[
-        // dummyAssignee has 5 completed tasks
-        for (int i = 0; i < 5; i++)
+    test(
+      '8. Edge case: blank or whitespace division names fall back to Umum',
+      () {
+        final tasks = [
           Task(
-            id: 'task-a-$i',
-            title: 'Task A$i',
+            id: 'task-empty-div',
+            title: 'No Div',
             description: 'Desc',
-            division: 'IT & Tech',
-            priority: PriorityType.medium,
+            division: '',
+            priority: PriorityType.low,
             status: TaskStatus.completed,
-            deadlineLabel: '2026-11-30',
+            deadlineLabel: 'Besok',
             subtasks: const [],
             assignee: dummyAssignee,
             progressPercent: 100,
           ),
-      ];
+          Task(
+            id: 'task-ws-div',
+            title: 'Whitespace Div',
+            description: 'Desc',
+            division: '   ',
+            priority: PriorityType.low,
+            status: TaskStatus.notStarted,
+            deadlineLabel: 'Besok',
+            subtasks: const [],
+            assignee: dummyAssignee,
+            progressPercent: 0,
+          ),
+        ];
 
-      final employees = <Assignee>[dummyAssignee, dummyAssignee2];
-      final ranking = TaskMetricsCalculator.computeEmployeePerformance(tasks, employees);
+        final divMetrics = TaskMetricsCalculator.computeDivisionProductivity(
+          tasks,
+        );
+        expect(divMetrics.length, 1);
+        expect(divMetrics.first.name, 'Umum');
+        expect(divMetrics.first.total, 2);
+        expect(divMetrics.first.completed, 1);
+        expect(divMetrics.first.completionRate, 50.0);
+      },
+    );
 
-      expect(ranking.length, 2);
-      // dummyAssignee: 100% rate * 0.8 = 80 + (5*2) = 10 -> score 90 -> 'Performa Terbaik'
-      expect(ranking[0].employee.id, dummyAssignee.id);
-      expect(ranking[0].rank, 1);
-      expect(ranking[0].score, 90);
-      expect(ranking[0].statusBadge, 'Performa Terbaik');
+    test(
+      '9. Employee Performance: score clamping, rank ties, and status badges',
+      () {
+        final tasks = <Task>[
+          // dummyAssignee has 5 completed tasks
+          for (int i = 0; i < 5; i++)
+            Task(
+              id: 'task-a-$i',
+              title: 'Task A$i',
+              description: 'Desc',
+              division: 'IT & Tech',
+              priority: PriorityType.medium,
+              status: TaskStatus.completed,
+              deadlineLabel: '2026-11-30',
+              subtasks: const [],
+              assignee: dummyAssignee,
+              progressPercent: 100,
+            ),
+        ];
 
-      // dummyAssignee2 has 0 tasks
-      expect(ranking[1].employee.id, dummyAssignee2.id);
-      expect(ranking[1].rank, 2);
-      expect(ranking[1].score, 0);
-      expect(ranking[1].statusBadge, 'Belum Ada Tugas');
-    });
+        final employees = <Assignee>[dummyAssignee, dummyAssignee2];
+        final ranking = TaskMetricsCalculator.computeEmployeePerformance(
+          tasks,
+          employees,
+        );
+
+        expect(ranking.length, 2);
+        // dummyAssignee: 100% rate * 0.8 = 80 + (5*2) = 10 -> score 90 -> 'Performa Terbaik'
+        expect(ranking[0].employee.id, dummyAssignee.id);
+        expect(ranking[0].rank, 1);
+        expect(ranking[0].score, 90);
+        expect(ranking[0].statusBadge, 'Performa Terbaik');
+
+        // dummyAssignee2 has 0 tasks
+        expect(ranking[1].employee.id, dummyAssignee2.id);
+        expect(ranking[1].rank, 2);
+        expect(ranking[1].score, 0);
+        expect(ranking[1].statusBadge, 'Belum Ada Tugas');
+      },
+    );
 
     test('10. Boundary: Month index out-of-range protection', () {
       expect(TaskMetricsCalculator.getIndonesianMonth(0), '');
@@ -361,12 +379,18 @@ void main() {
       ];
 
       // Query filter
-      final qResult = TaskMetricsCalculator.filterTasks(tasks, query: 'database');
+      final qResult = TaskMetricsCalculator.filterTasks(
+        tasks,
+        query: 'database',
+      );
       expect(qResult.length, 1);
       expect(qResult.first.id, 'task-sort-1');
 
       // Division filter
-      final divResult = TaskMetricsCalculator.filterTasks(tasks, division: 'IT & Tech');
+      final divResult = TaskMetricsCalculator.filterTasks(
+        tasks,
+        division: 'IT & Tech',
+      );
       expect(divResult.length, 1);
       expect(divResult.first.id, 'task-sort-1');
 

@@ -1,11 +1,11 @@
-# Cilalutask Mobile — Prompt Perbaikan dan Peningkatan Bertahap
+# Cilulatask Mobile — Prompt Perbaikan dan Peningkatan Bertahap
 
-Dokumen ini berisi prompt yang bisa diberikan **satu per satu** kepada AI coding agent (Codex, Cursor, Claude Code, Antigravity, atau sejenisnya) untuk memperbaiki `cilalutask_mobile` sampai siap dirilis. Urutan ini disusun berdasarkan hasil *static review* sebelumnya. Kondisi repository bisa berubah, jadi agen wajib memeriksa kode aktual sebelum mengedit.
+Dokumen ini berisi prompt yang bisa diberikan **satu per satu** kepada AI coding agent (Codex, Cursor, Claude Code, Antigravity, atau sejenisnya) untuk memperbaiki `Cilulatask_mobile` sampai siap dirilis. Urutan ini disusun berdasarkan hasil *static review* sebelumnya. Kondisi repository bisa berubah, jadi agen wajib memeriksa kode aktual sebelum mengedit.
 
 ## Cara menggunakan
 
-1. Buka workspace repository `ErlanggaDevMode/Cilalutask`.
-2. Pastikan working directory/referensi utama adalah `cilalutask_mobile/`.
+1. Buka workspace repository `ErlanggaDevMode/Cilulatask`.
+2. Pastikan working directory/referensi utama adalah `Cilulatask_mobile/`.
 3. Tempel **Prompt 0** dahulu. Sesudah hasil audit disetujui dan baseline dicatat, lanjutkan fase berikutnya secara berurutan.
 4. Jalankan satu fase dalam satu waktu. Periksa diff, jalankan tes, lalu buat commit/checkpoint sebelum melanjutkan.
 5. Jangan menjalankan seluruh prompt sekaligus. Perubahan autentikasi dan aturan Firestore bisa berdampak pada akses data, jadi wajib diuji sebelum fitur lain diteruskan.
@@ -19,10 +19,10 @@ Dokumen ini berisi prompt yang bisa diberikan **satu per satu** kepada AI coding
 Sertakan blok ini di atas prompt fase yang sedang dijalankan, atau jadikan instruksi permanen pada coding agent.
 
 ```text
-Kamu bertindak sebagai senior Flutter/Dart engineer, Firebase engineer, dan reviewer keamanan untuk repository Cilalutask.
+Kamu bertindak sebagai senior Flutter/Dart engineer, Firebase engineer, dan reviewer keamanan untuk repository Cilulatask.
 
 SCOPE:
-- Prioritas utama hanya aplikasi Flutter di `cilalutask_mobile/`.
+- Prioritas utama hanya aplikasi Flutter di `Cilulatask_mobile/`.
 - File konfigurasi Firebase Security Rules di root repository boleh diubah hanya bila diperlukan untuk keamanan dan kompatibilitas aplikasi mobile.
 - Jangan mengubah web app atau bagian project lain yang tidak relevan.
 - Pertahankan bahasa, alur kerja, nama fitur, dan desain yang sudah ada sejauh memungkinkan.
@@ -61,7 +61,7 @@ Jangan memulai fase berikutnya sebelum fase saat ini selesai atau blocker-nya di
 ### Prompt 0
 
 ```text
-Lakukan audit teknis awal untuk `cilalutask_mobile/` sebelum mengubah kode apa pun.
+Lakukan audit teknis awal untuk `Cilulatask_mobile/` sebelum mengubah kode apa pun.
 
 Tujuan:
 1. Petakan struktur project: entry point, screens, models, state/controllers, services, routing/navigation, theme, assets, Firebase initialization, local persistence, dan tests.
@@ -102,7 +102,7 @@ Kriteria selesai:
 ### Prompt 1
 
 ```text
-Implementasikan perbaikan keamanan kritis dan autentikasi untuk `cilalutask_mobile/`, berdasarkan temuan aktual dari audit.
+Implementasikan perbaikan keamanan kritis dan autentikasi untuk `Cilulatask_mobile/`, berdasarkan temuan aktual dari audit.
 
 Target:
 1. Hilangkan password plaintext dari model bisnis, serialisasi `toMap/fromMap`, SharedPreferences, Cloud Firestore, log, dan data join request. Password hanya boleh diberikan ke provider autentikasi tepercaya dan tidak boleh disimpan sendiri oleh aplikasi.
@@ -144,7 +144,7 @@ Selesaikan implementasi kode yang bisa dilakukan di repository. Pisahkan daftar 
 ### Prompt 2
 
 ```text
-Perbaiki arsitektur pemuatan dan penyimpanan data Cilalutask agar alur lokal dan Cloud Firestore jelas, konsisten, serta dapat menangani kegagalan.
+Perbaiki arsitektur pemuatan dan penyimpanan data Cilulatask agar alur lokal dan Cloud Firestore jelas, konsisten, serta dapat menangani kegagalan.
 
 Mulai dengan menelusuri semua domain data aktual: company, users/members, tasks, SOP, chat/messages, notifications, join requests, reports, dan domain lain yang memang ada. Temukan seluruh pemanggilan read/write serta jalur yang dipakai saat startup, login, logout, dan company switching.
 
@@ -186,7 +186,7 @@ Selesaikan perubahan ini tanpa merombak tampilan layar secara besar-besaran.
 ### Prompt 3
 
 ```text
-Refactor state management Cilalutask secara inkremental. Fokuskan pada controller/state file yang terlalu besar, terutama `AppStateController` jika hasil audit mengonfirmasi bahwa ia mengurus banyak domain sekaligus.
+Refactor state management Cilulatask secara inkremental. Fokuskan pada controller/state file yang terlalu besar, terutama `AppStateController` jika hasil audit mengonfirmasi bahwa ia mengurus banyak domain sekaligus.
 
 Tujuan:
 1. Petakan tanggung jawab controller sekarang, termasuk auth/session, company membership, tasks, SOP, chat, notifications, dan storage.
@@ -223,7 +223,7 @@ Kriteria selesai:
 ### Prompt 4
 
 ```text
-Audit dan perbaiki bug fungsional pada `cilalutask_mobile/`, terutama daftar tugas, filter, status, laporan, dan tombol yang terlihat aktif tetapi belum punya aksi.
+Audit dan perbaiki bug fungsional pada `Cilulatask_mobile/`, terutama daftar tugas, filter, status, laporan, dan tombol yang terlihat aktif tetapi belum punya aksi.
 
 Mulai dengan menemukan implementasi aktual untuk setiap fitur. Verifikasi, minimal:
 - Filter status di task screen dan status default saat halaman dibuka.
@@ -265,7 +265,7 @@ Jangan mengubah identitas visual secara besar-besaran pada fase ini. Fokus pada 
 ### Prompt 5
 
 ```text
-Tingkatkan kualitas UI/UX Cilalutask tanpa menghilangkan identitas visual yang sudah ada. Gunakan UI existing sebagai baseline; jangan mendesain ulang seluruh aplikasi tanpa kebutuhan.
+Tingkatkan kualitas UI/UX Cilulatask tanpa menghilangkan identitas visual yang sudah ada. Gunakan UI existing sebagai baseline; jangan mendesain ulang seluruh aplikasi tanpa kebutuhan.
 
 Audit semua screen utama dan state yang mungkin muncul: initial/loading, loaded, empty, error, offline, permission denied, form validation, save in progress, save success, serta delete confirmation.
 
@@ -301,7 +301,7 @@ Jangan mengubah logic bisnis dan schema backend kecuali diperlukan untuk menyele
 ### Prompt 6
 
 ```text
-Perkuat automated testing dan quality gates untuk Cilalutask mobile. Jangan hanya menambahkan test yang mengulang implementasi; test behavior yang penting bagi pengguna dan keamanan.
+Perkuat automated testing dan quality gates untuk Cilulatask mobile. Jangan hanya menambahkan test yang mengulang implementasi; test behavior yang penting bagi pengguna dan keamanan.
 
 1. Audit test yang ada dan jalankan seluruh suite. Pertahankan test lama yang relevan; perbaiki test yang rapuh dengan alasan yang jelas.
 2. Buat unit tests untuk business logic murni: task status/filter, completion rate, date range, validasi model/serialization, dan permission logic client-side yang relevan.
@@ -335,7 +335,7 @@ Perbaiki penyebab test gagal, bukan menghapus assertion atau melewati test. Jika
 ### Prompt 7
 
 ```text
-Audit dan optimalkan performa serta penggunaan resource Cilalutask mobile dengan bukti dari kode dan pengukuran yang tersedia. Hindari optimasi prematur.
+Audit dan optimalkan performa serta penggunaan resource Cilulatask mobile dengan bukti dari kode dan pengukuran yang tersedia. Hindari optimasi prematur.
 
 Audit:
 - Query Firestore yang mengambil data terlalu banyak atau tidak memakai pagination.
@@ -373,7 +373,7 @@ Validasi:
 ### Prompt 8
 
 ```text
-Siapkan Cilalutask mobile menjadi release candidate yang dapat dibangun, dikonfigurasi, diuji, dan dipelihara oleh developer lain.
+Siapkan Cilulatask mobile menjadi release candidate yang dapat dibangun, dikonfigurasi, diuji, dan dipelihara oleh developer lain.
 
 1. Audit konfigurasi build Android/iOS yang ada: application ID/bundle ID, minimum SDK, target SDK, versi Flutter/Dart, permission, signing, Firebase config, dan environment separation. Jangan mengganti ID aplikasi atau signing yang sudah dipakai tanpa alasan kuat karena dapat memutus update untuk pengguna lama.
 2. Pastikan tidak ada file kredensial rahasia, password, token, service-account JSON, atau environment file berisi rahasia yang ikut ter-commit. Jangan menghapus Firebase client config yang memang diperlukan oleh platform tanpa memahami sifatnya; fokuskan pada pembatasan akses lewat rules, auth, dan konfigurasi yang tepat.
@@ -406,7 +406,7 @@ Jangan menyebut aplikasi production-ready bila blocker keamanan belum diuji, Sec
 ### Prompt 9
 
 ```text
-Lakukan final audit Cilalutask mobile terhadap semua perubahan fase 0–8. Tujuan fase ini adalah membuktikan kesiapan atau menyatakan secara jujur alasan aplikasi belum siap rilis, bukan menambah fitur baru.
+Lakukan final audit Cilulatask mobile terhadap semua perubahan fase 0–8. Tujuan fase ini adalah membuktikan kesiapan atau menyatakan secara jujur alasan aplikasi belum siap rilis, bukan menambah fitur baru.
 
 Periksa kembali diff dan implementasi aktual:
 1. Security: tidak ada password plaintext; Auth benar-benar menjadi sumber sesi; Firestore Rules least-privilege; company isolation dan role enforcement diuji; tidak ada data rahasia di log/repository.
@@ -463,7 +463,7 @@ Aturan penentuan keputusan:
 
 ## Definisi “selesai akhir”
 
-Cilalutask mobile baru layak disebut siap produksi jika seluruh syarat berikut telah diverifikasi, bukan sekadar diimplementasikan:
+Cilulatask mobile baru layak disebut siap produksi jika seluruh syarat berikut telah diverifikasi, bukan sekadar diimplementasikan:
 
 - Autentikasi server berjalan dan logout benar-benar mengakhiri sesi.
 - Tidak ada password plaintext tersimpan atau terekspos.

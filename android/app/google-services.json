@@ -1,15 +1,15 @@
 {
   "project_info": {
     "project_number": "444266460057",
-    "project_id": "cilalutask",
-    "storage_bucket": "cilalutask.firebasestorage.app"
+    "project_id": "Cilulatask",
+    "storage_bucket": "Cilulatask.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:444266460057:android:70dd1ec95ec31f2a959908",
         "android_client_info": {
-          "package_name": "com.cilalutask.cilalutask_mobile"
+          "package_name": "com.Cilulatask.Cilulatask_mobile"
         }
       },
       "oauth_client": [],

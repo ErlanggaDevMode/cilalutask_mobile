@@ -633,8 +633,6 @@ class AppStateController extends ChangeNotifier {
   List<SOPDocument> get sops => _sopController.sops;
 
   Future<void> addSop(SOPDocument newSop) async {
-    if (!isAdmin) return;
-
     final newActivity = ActivityItem(
       id: 'act-${DateTime.now().millisecondsSinceEpoch}',
       userName: currentUserName,
@@ -664,6 +662,40 @@ class AppStateController extends ChangeNotifier {
     await _sopController.addSop(_companyController.currentCompany.code, newSop);
   }
 
+  Future<void> updateSop(SOPDocument updatedSop) async {
+    final newActivity = ActivityItem(
+      id: 'act-${DateTime.now().millisecondsSinceEpoch}',
+      userName: currentUserName,
+      userAvatar: currentUserAvatar,
+      actionPrefix: 'mengunggah revisi SOP',
+      targetObject: '${updatedSop.code} (${updatedSop.version})',
+      timeAgo: 'Baru saja',
+      department: updatedSop.category,
+      type: 'sop',
+    );
+    _activities = [newActivity, ..._activities];
+
+    pushNotification(
+      NotificationItem(
+        id: 'notif-sop-rev-${DateTime.now().millisecondsSinceEpoch}',
+        title: '🔄 Revisi SOP: ${updatedSop.code} (${updatedSop.version})',
+        description:
+            'Pembaruan dokumen "${updatedSop.title}" telah diterbitkan.',
+        time: 'Baru saja',
+        type: 'sop',
+        targetTab: 2,
+        targetId: updatedSop.id,
+        timestamp: DateTime.now(),
+      ),
+      showBanner: true,
+    );
+
+    await _sopController.updateSop(
+      _companyController.currentCompany.code,
+      updatedSop,
+    );
+  }
+
   Future<void> deleteSop(String sopId) async {
     if (!isAdmin) return;
     await _sopController.deleteSop(
@@ -673,10 +705,15 @@ class AppStateController extends ChangeNotifier {
   }
 
   Future<void> confirmReadSop(String sopId) async {
+    final totalEmp = _companyController.employees.isNotEmpty
+        ? _companyController.employees.length
+        : (_companyController.isBlankMode ? 1 : 6);
     await _sopController.confirmReadSop(
       _companyController.currentCompany.code,
       sopId,
+      totalEmployees: totalEmp,
     );
+    if (_sopController.sops.isEmpty) return;
     final sop = _sopController.sops.firstWhere(
       (s) => s.id == sopId,
       orElse: () => _sopController.sops.first,

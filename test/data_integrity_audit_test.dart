@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:cilalutask_mobile/core/utils/task_metrics_calculator.dart';
-import 'package:cilalutask_mobile/data/mock_data.dart';
-import 'package:cilalutask_mobile/models/task.dart';
-import 'package:cilalutask_mobile/models/company.dart';
+import 'package:Cilulatask_mobile/core/utils/task_metrics_calculator.dart';
+import 'package:Cilulatask_mobile/data/mock_data.dart';
+import 'package:Cilulatask_mobile/models/task.dart';
+import 'package:Cilulatask_mobile/models/company.dart';
 
 void main() {
   group('DATA MASTER INTEGRITY & RECONCILIATION AUDIT', () {
@@ -70,12 +70,12 @@ void main() {
         code: 'CILALU-88',
         name: 'PT Cilalu Sentosa',
         adminName: 'Sarah Pratama',
-        adminEmail: 'sarah.pratama@cilalutask.id',
+        adminEmail: 'sarah.pratama@Cilulatask.id',
         createdAt: DateTime(2025, 1, 1),
       );
       expect(company.code, 'CILALU-88');
       expect(company.name, 'PT Cilalu Sentosa');
-      expect(company.adminEmail, 'sarah.pratama@cilalutask.id');
+      expect(company.adminEmail, 'sarah.pratama@Cilulatask.id');
       expect(company.adminName, 'Sarah Pratama');
     });
   });

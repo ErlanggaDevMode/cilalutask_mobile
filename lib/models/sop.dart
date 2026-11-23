@@ -46,6 +46,10 @@ class SOPDocument {
   final String? description;
   final List<ContentSection> contentSections;
   final bool isReadByMe;
+  final String? attachmentFileName;
+  final int? attachmentFileSize;
+  final String? attachmentMimeType;
+  final String? attachmentBase64;
 
   const SOPDocument({
     required this.id,
@@ -68,6 +72,10 @@ class SOPDocument {
     this.description,
     this.contentSections = const [],
     this.isReadByMe = false,
+    this.attachmentFileName,
+    this.attachmentFileSize,
+    this.attachmentMimeType,
+    this.attachmentBase64,
   });
 
   SOPDocument copyWith({
@@ -91,6 +99,10 @@ class SOPDocument {
     String? description,
     List<ContentSection>? contentSections,
     bool? isReadByMe,
+    String? attachmentFileName,
+    int? attachmentFileSize,
+    String? attachmentMimeType,
+    String? attachmentBase64,
   }) {
     return SOPDocument(
       id: id ?? this.id,
@@ -113,6 +125,10 @@ class SOPDocument {
       description: description ?? this.description,
       contentSections: contentSections ?? this.contentSections,
       isReadByMe: isReadByMe ?? this.isReadByMe,
+      attachmentFileName: attachmentFileName ?? this.attachmentFileName,
+      attachmentFileSize: attachmentFileSize ?? this.attachmentFileSize,
+      attachmentMimeType: attachmentMimeType ?? this.attachmentMimeType,
+      attachmentBase64: attachmentBase64 ?? this.attachmentBase64,
     );
   }
 
@@ -138,6 +154,10 @@ class SOPDocument {
       'description': description,
       'contentSections': contentSections.map((s) => s.toMap()).toList(),
       'isReadByMe': isReadByMe,
+      'attachmentFileName': attachmentFileName,
+      'attachmentFileSize': attachmentFileSize,
+      'attachmentMimeType': attachmentMimeType,
+      'attachmentBase64': attachmentBase64,
     };
   }
 
@@ -166,6 +186,10 @@ class SOPDocument {
         (s) => ContentSection.fromMap(s),
       ),
       isReadByMe: map['isReadByMe'] as bool? ?? false,
+      attachmentFileName: map['attachmentFileName'] as String?,
+      attachmentFileSize: map['attachmentFileSize'] as int?,
+      attachmentMimeType: map['attachmentMimeType'] as String?,
+      attachmentBase64: map['attachmentBase64'] as String?,
     );
   }
 }

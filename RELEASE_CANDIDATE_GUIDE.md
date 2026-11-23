@@ -1,6 +1,6 @@
-# 📘 Cilalutask Mobile - Release Candidate Developer Guide
+# 📘 Cilulatask Mobile - Release Candidate Developer Guide
 
-Dokumen ini ditujukan bagi developer dan tim QA untuk membangun (build), mengonfigurasi, menguji, dan memelihara **Cilalutask Mobile (Release Candidate v1.0.0-rc1)**.
+Dokumen ini ditujukan bagi developer dan tim QA untuk membangun (build), mengonfigurasi, menguji, dan memelihara **Cilulatask Mobile (Release Candidate v1.0.0-rc1)**.
 
 ---
 
@@ -23,12 +23,12 @@ Dokumen ini ditujukan bagi developer dan tim QA untuk membangun (build), mengonf
 |---|---|---|
 | **Flutter SDK** | `3.47.2` (Channel stable) | Memenuhi `sdk: ^3.13.2` di pubspec |
 | **Dart SDK** | `3.13.2` | Strong mode, null safety aktif |
-| **Android Application ID** | `com.cilalutask.cilalutask_mobile` | **Wajib dipertahankan** agar update Google Play tidak putus |
-| **Android Namespace** | `com.cilalutask.cilalutask_mobile` | Android Gradle Plugin 8+ |
+| **Android Application ID** | `com.Cilulatask.Cilulatask_mobile` | **Wajib dipertahankan** agar update Google Play tidak putus |
+| **Android Namespace** | `com.Cilulatask.Cilulatask_mobile` | Android Gradle Plugin 8+ |
 | **Android Min SDK** | `21` (Android 5.0 Lollipop) | 99%+ cakupan perangkat global |
 | **Android Target SDK** | `34` / `35` (Android 14/15) | Standar kepatuhan Google Play Store 2024-2026 |
 | **Android Toolchain JDK** | Java 17+ (OpenJDK 21 direkomendasikan) | Diperlukan oleh Gradle 8.x/9.x & Kotlin 1.9+ |
-| **iOS Bundle Identifier** | `com.cilalutask.cilalutaskMobile` | **Wajib dipertahankan** untuk Apple App Store |
+| **iOS Bundle Identifier** | `com.Cilulatask.CilulataskMobile` | **Wajib dipertahankan** untuk Apple App Store |
 | **iOS Deployment Target** | `12.0` | Kompatibel dengan iPhone 6s ke atas |
 | **Permissions (Android)** | `INTERNET`, `ACCESS_NETWORK_STATE` | Komunikasi Firestore & deteksi koneksi |
 
@@ -39,7 +39,7 @@ Dokumen ini ditujukan bagi developer dan tim QA untuk membangun (build), mengonf
 ### Langkah 1: Clone & Pasang Dependensi
 ```bash
 # Masuk ke direktori mobile
-cd cilalutask_mobile
+cd Cilulatask_mobile
 
 # Bersihkan dan pasang paket Flutter
 flutter clean
@@ -67,8 +67,8 @@ Aplikasi telah menyertakan konfigurasi client Firebase resmi:
 - **Flutter**: `lib/firebase_options.dart` (mendukung Android, iOS, Web, macOS, Windows)
 
 ### Arsitektur Multi-Environment (Dev / Staging / Production)
-Secara default, aplikasi terhubung ke proyek Firebase `cilalutask`. Jika ingin memisahkan environment:
-1. Buat proyek Firebase terpisah di Firebase Console (misal: `cilalutask-dev` dan `cilalutask-prod`).
+Secara default, aplikasi terhubung ke proyek Firebase `Cilulatask`. Jika ingin memisahkan environment:
+1. Buat proyek Firebase terpisah di Firebase Console (misal: `Cilulatask-dev` dan `Cilulatask-prod`).
 2. Pasang Firebase CLI dan FlutterFire CLI:
    ```bash
    npm install -g firebase-tools
@@ -76,7 +76,7 @@ Secara default, aplikasi terhubung ke proyek Firebase `cilalutask`. Jika ingin m
    ```
 3. Konfigurasikan proyek target dengan perintah:
    ```bash
-   flutterfire configure --project=cilalutask-dev
+   flutterfire configure --project=Cilulatask-dev
    ```
 4. Pasang Firebase Security Rules dan Indeks ke Firebase Backend:
    ```bash
@@ -97,14 +97,14 @@ Konfigurasi build Android (`android/app/build.gradle.kts`) telah diprogram denga
 ### Langkah Setup Signing Produksi:
 1. Buat Release Keystore (jika belum ada):
    ```bash
-   keytool -genkey -v -keystore android/cilalutask-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias cilalutask-key
+   keytool -genkey -v -keystore android/Cilulatask-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias Cilulatask-key
    ```
 2. Isi file `android/key.properties`:
    ```properties
    storePassword=KataSandiKeystoreAnda
    keyPassword=KataSandiKeyAnda
-   keyAlias=cilalutask-key
-   storeFile=cilalutask-release-key.jks
+   keyAlias=Cilulatask-key
+   storeFile=Cilulatask-release-key.jks
    ```
 3. Bangun APK atau App Bundle rilis:
    ```bash

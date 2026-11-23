@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/report_and_sop_exporter.dart';
 import '../../core/widgets/app_confirm_dialog.dart';
 import '../../models/sop.dart';
+import '../../state/app_state_scope.dart';
 
-class SopDetailBottomSheet extends StatelessWidget {
+class SopDetailBottomSheet extends StatefulWidget {
   final SOPDocument sop;
   final void Function(String sopId) onConfirmRead;
   final bool isAdmin;
   final VoidCallback? onDelete;
+  final VoidCallback? onRevise;
 
   const SopDetailBottomSheet({
     super.key,
@@ -16,6 +20,7 @@ class SopDetailBottomSheet extends StatelessWidget {
     required this.onConfirmRead,
     this.isAdmin = false,
     this.onDelete,
+    this.onRevise,
   });
 
   static Future<void> show(
@@ -24,6 +29,7 @@ class SopDetailBottomSheet extends StatelessWidget {
     required void Function(String sopId) onConfirmRead,
     bool isAdmin = false,
     VoidCallback? onDelete,
+    VoidCallback? onRevise,
   }) {
     return showModalBottomSheet<void>(
       context: context,
@@ -37,12 +43,55 @@ class SopDetailBottomSheet extends StatelessWidget {
         onConfirmRead: onConfirmRead,
         isAdmin: isAdmin,
         onDelete: onDelete,
+        onRevise: onRevise,
       ),
     );
   }
 
   @override
+  State<SopDetailBottomSheet> createState() => _SopDetailBottomSheetState();
+}
+
+class _SopDetailBottomSheetState extends State<SopDetailBottomSheet> {
+  bool _isDownloading = false;
+
+  Future<void> _downloadSopFile() async {
+    if (_isDownloading) return;
+    setState(() => _isDownloading = true);
+    try {
+      final appState = AppStateScope.maybeOf(context);
+      final companyName = appState?.currentCompany.name ?? 'PT Cilalu Sentosa';
+      final result = await ReportAndSopExporter.exportSopDocument(
+        widget.sop,
+        companyName: companyName,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Berkas "${result.fileName}" (${result.formattedSize}) berhasil diunduh!',
+          ),
+          backgroundColor: AppColors.primaryDark,
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: 'Salin Teks',
+            textColor: const Color(0xFF6EE7B7),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: result.textPreview));
+            },
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isDownloading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final sop = widget.sop;
+    final isAdmin = widget.isAdmin;
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.90,
@@ -72,15 +121,35 @@ class SopDetailBottomSheet extends StatelessWidget {
                   color: AppColors.primary,
                 ),
                 const SizedBox(width: 8),
-                const Text(
-                  'Dokumen Standar Operasional',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                const Expanded(
+                  child: Text(
+                    'Dokumen Standar Operasional',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                 ),
-                const Spacer(),
+                if (widget.onRevise != null)
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      widget.onRevise!();
+                    },
+                    icon: const Icon(Icons.edit_document, size: 15),
+                    label: const Text(
+                      'Revisi',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      foregroundColor: AppColors.primary,
+                    ),
+                  ),
                 IconButton(
                   icon: const Icon(
                     Icons.close_rounded,
@@ -176,10 +245,92 @@ class SopDetailBottomSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${sop.lastUpdatedText} • Divisi Terkait',
+                  '${sop.lastUpdatedText} • ${sop.readTeamCount ?? "Divisi Terkait"}',
                   style: const TextStyle(
                     fontSize: 12,
                     color: AppColors.textMuted,
+                  ),
+                ),
+                const SizedBox(height: 14),
+
+                // Downloadable Attachment Card
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight.withValues(alpha: 0.45),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.primaryBorder),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.picture_as_pdf_rounded,
+                          color: AppColors.danger,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              sop.attachmentFileName ??
+                                  '${sop.code}_${sop.version}.pdf',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            Text(
+                              sop.fileInfo ??
+                                  'Dokumen Resmi PDF Standar ISO/K3',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: _isDownloading ? null : _downloadSopFile,
+                        icon: _isDownloading
+                            ? const SizedBox(
+                                width: 12,
+                                height: 12,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(Icons.download_rounded, size: 14),
+                        label: const Text(
+                          'Unduh PDF',
+                          style: TextStyle(fontSize: 11, color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          visualDensity: VisualDensity.compact,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -304,10 +455,10 @@ class SopDetailBottomSheet extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: AppColors.successLight.withOpacity(0.7),
+                    color: AppColors.successLight.withValues(alpha: 0.7),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.success.withOpacity(0.3),
+                      color: AppColors.success.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(
@@ -350,7 +501,7 @@ class SopDetailBottomSheet extends StatelessWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: AppColors.success.withOpacity(0.5),
+                              color: AppColors.success.withValues(alpha: 0.5),
                             ),
                           ),
                           child: const Row(
@@ -390,7 +541,7 @@ class SopDetailBottomSheet extends StatelessWidget {
                 // Action Buttons
                 Row(
                   children: [
-                    if (isAdmin && onDelete != null) ...[
+                    if (isAdmin && widget.onDelete != null) ...[
                       IconButton(
                         onPressed: () async {
                           final confirmed = await AppConfirmDialog.show(
@@ -404,7 +555,7 @@ class SopDetailBottomSheet extends StatelessWidget {
                           );
                           if (confirmed == true && context.mounted) {
                             Navigator.of(context).pop();
-                            onDelete!();
+                            widget.onDelete!();
                           }
                         },
                         icon: const Icon(
@@ -425,7 +576,7 @@ class SopDetailBottomSheet extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () {
-                          onConfirmRead(sop.id);
+                          widget.onConfirmRead(sop.id);
                           Navigator.of(context).pop();
                         },
                         icon: const Icon(Icons.check_circle_rounded, size: 16),

@@ -1,6 +1,6 @@
-# ⚡ Laporan Strategi Performa, Lifecycle & Pengalaman Offline — CILALUTASK Mobile
+# ⚡ Laporan Strategi Performa, Lifecycle & Pengalaman Offline — Cilulatask Mobile
 
-Dokumen ini mendokumentasikan hasil audit performa, implementasi optimasi berbasis inspeksi kode, evaluasi arsitektur penyimpanan lokal, serta mekanisme rekonsiliasi data saat offline pada **Cilalutask Mobile**.
+Dokumen ini mendokumentasikan hasil audit performa, implementasi optimasi berbasis inspeksi kode, evaluasi arsitektur penyimpanan lokal, serta mekanisme rekonsiliasi data saat offline pada **Cilulatask Mobile**.
 
 ---
 
@@ -29,7 +29,7 @@ Dokumen ini mendokumentasikan hasil audit performa, implementasi optimasi berbas
 Migrasi ke database relasional lokal (seperti **Drift / SQLite**) direkomendasikan jika:
 1. Jumlah tugas per perusahaan melebihi **1.000+ item aktif** atau membutuhkan pencarian teks tingkat lanjut (*Full-Text Search / FTS5*).
 2. Terdapat kebutuhan relasi tabel foreign-key yang kompleks antar entitas offline.
-3. Arsitektur repositori saat ini ([CilaluRepository](file:///c:/T/Cilalutask/cilalutask_mobile/lib/repositories/cilalu_repository.dart)) dirancang dengan pola *Repository Pattern* independen, sehingga migrasi penyimpanan lokal ke Drift dapat dilakukan di dalam `LocalStorageService` tanpa perlu mengubah satupun kode UI atau Business Logic screens.
+3. Arsitektur repositori saat ini ([CilaluRepository](file:///c:/T/Cilulatask/Cilulatask_mobile/lib/repositories/cilalu_repository.dart)) dirancang dengan pola *Repository Pattern* independen, sehingga migrasi penyimpanan lokal ke Drift dapat dilakukan di dalam `LocalStorageService` tanpa perlu mengubah satupun kode UI atau Business Logic screens.
 
 ---
 

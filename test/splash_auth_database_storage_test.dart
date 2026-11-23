@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:cilalutask_mobile/main.dart';
-import 'package:cilalutask_mobile/models/chat_model.dart';
-import 'package:cilalutask_mobile/models/company.dart';
-import 'package:cilalutask_mobile/models/employee.dart';
-import 'package:cilalutask_mobile/models/notification_item.dart';
-import 'package:cilalutask_mobile/models/sop.dart';
-import 'package:cilalutask_mobile/models/task.dart';
-import 'package:cilalutask_mobile/models/user_role.dart';
-import 'package:cilalutask_mobile/repositories/cilalu_repository.dart';
-import 'package:cilalutask_mobile/repositories/data_exception.dart';
-import 'package:cilalutask_mobile/screens/splash_screen.dart';
-import 'package:cilalutask_mobile/services/auth_service.dart';
-import 'package:cilalutask_mobile/services/firestore_service.dart';
-import 'package:cilalutask_mobile/services/local_storage_service.dart';
-import 'package:cilalutask_mobile/state/app_state_controller.dart';
+import 'package:Cilulatask_mobile/main.dart';
+import 'package:Cilulatask_mobile/models/chat_model.dart';
+import 'package:Cilulatask_mobile/models/company.dart';
+import 'package:Cilulatask_mobile/models/employee.dart';
+import 'package:Cilulatask_mobile/models/notification_item.dart';
+import 'package:Cilulatask_mobile/models/sop.dart';
+import 'package:Cilulatask_mobile/models/task.dart';
+import 'package:Cilulatask_mobile/models/user_role.dart';
+import 'package:Cilulatask_mobile/repositories/cilalu_repository.dart';
+import 'package:Cilulatask_mobile/repositories/data_exception.dart';
+import 'package:Cilulatask_mobile/screens/splash_screen.dart';
+import 'package:Cilulatask_mobile/services/auth_service.dart';
+import 'package:Cilulatask_mobile/services/firestore_service.dart';
+import 'package:Cilulatask_mobile/services/local_storage_service.dart';
+import 'package:Cilulatask_mobile/state/app_state_controller.dart';
 
 /// In-memory test double for [FirestoreService] to verify database CRUD,
 /// batch operations, offline fallback, and reconciliation.
@@ -198,7 +198,7 @@ void main() {
   // ─────────────────────────────────────────────────────────────────────────
   group('1. SPLASH SCREEN — LOGO FADE IN & OUT + LOADING INDICATOR', () {
     testWidgets(
-      'SplashScreen renders cilalutask_logo.png on white background, animates fade-in -> hold -> fade-out with synchronized loading indicator, and triggers onCompleted',
+      'SplashScreen renders Cilulatask_logo.png on white background, animates fade-in -> hold -> fade-out with synchronized loading indicator, and triggers onCompleted',
       (WidgetTester tester) async {
         bool completed = false;
 
@@ -228,7 +228,7 @@ void main() {
         expect(imageWidget.image, isA<AssetImage>());
         expect(
           (imageWidget.image as AssetImage).assetName,
-          'cilalutask_logo.png',
+          'Cilulatask_logo.png',
         );
 
         // At t = 0ms: Opacity starts at 0.0, progress starts at 0.0
@@ -275,7 +275,7 @@ void main() {
     );
 
     testWidgets(
-      'CilalutaskApp launches with SplashScreen and automatically transitions to LoginScreen or MainNavigationScreen',
+      'CilulataskApp launches with SplashScreen and automatically transitions to LoginScreen or MainNavigationScreen',
       (WidgetTester tester) async {
         tester.view.physicalSize = const Size(800, 1200);
         tester.view.devicePixelRatio = 1.0;
@@ -288,7 +288,7 @@ void main() {
         addTearDown(() => controller.dispose());
         await controller.initStorage();
 
-        await tester.pumpWidget(CilalutaskApp(controller: controller));
+        await tester.pumpWidget(CilulataskApp(controller: controller));
 
         // Initially displays SplashScreen
         expect(find.byType(SplashScreen), findsOneWidget);
@@ -297,7 +297,7 @@ void main() {
         // After splash animation completes (pumpAndSettle), transitions to LoginScreen
         await tester.pumpAndSettle();
         expect(find.byType(SplashScreen), findsNothing);
-        expect(find.text('CILALUTASK'), findsOneWidget);
+        expect(find.text('Cilulatask'), findsOneWidget);
         expect(find.text('Masuk sebagai Admin'), findsOneWidget);
       },
     );
@@ -370,7 +370,7 @@ void main() {
       await expectLater(
         controller.loginWithCredentials(
           companyCode: 'CILALU-88',
-          email: 'not.member@cilalutask.id',
+          email: 'not.member@Cilulatask.id',
           password: 'Password123!',
           role: UserRole.user,
         ),
@@ -433,7 +433,7 @@ void main() {
           employeeId: 'emp-42',
           customAvatar: 'https://example.com/avatar.png',
           userId: 'uid-firebase-42',
-          userEmail: 'emp42@cilalutask.id',
+          userEmail: 'emp42@Cilulatask.id',
         );
 
         final loadedSession = await storage.loadSession();
@@ -442,7 +442,7 @@ void main() {
         expect(loadedSession['employeeId'], 'emp-42');
         expect(loadedSession['customAvatar'], 'https://example.com/avatar.png');
         expect(loadedSession['userId'], 'uid-firebase-42');
-        expect(loadedSession['userEmail'], 'emp42@cilalutask.id');
+        expect(loadedSession['userEmail'], 'emp42@Cilulatask.id');
 
         // 2. Save & Load Pending Offline Tasks Queue
         const pendingTask = Task(
@@ -556,7 +556,7 @@ void main() {
         companyName: 'PT Cilalu Nusantara',
         userId: 'uid-new-emp',
         userName: 'Dina Pratiwi',
-        userEmail: 'dina@cilalutask.id',
+        userEmail: 'dina@Cilulatask.id',
         division: 'Kualitas',
         role: 'QA Specialist',
         avatar: '',
@@ -576,7 +576,7 @@ void main() {
         avatar: '',
         division: 'Kualitas',
         role: 'QA Specialist',
-        email: 'dina@cilalutask.id',
+        email: 'dina@Cilulatask.id',
       );
 
       final welcomeNotif = NotificationItem(

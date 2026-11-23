@@ -112,33 +112,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   // Brand Logo & Header
                   Container(
-                    width: 58,
-                    height: 58,
+                    width: 64,
+                    height: 64,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF1D4ED8), Color(0xFF4F46E5)],
-                        begin: Alignment.bottomLeft,
-                        end: Alignment.topRight,
-                      ),
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.35),
+                          color: AppColors.primary.withValues(alpha: 0.25),
                           blurRadius: 14,
                           offset: const Offset(0, 5),
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.shield_rounded,
-                      color: Colors.white,
-                      size: 32,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(18),
+                      child: Image.asset(
+                        'Cilulatask_logo.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
 
                   const Text(
-                    'CILALUTASK',
+                    'Cilulatask',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w900,

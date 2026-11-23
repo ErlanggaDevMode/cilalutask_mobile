@@ -1,4 +1,4 @@
-package com.cilalutask.cilalutask_mobile
+package com.Cilulatask.Cilulatask_mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

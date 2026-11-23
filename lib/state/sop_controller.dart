@@ -76,16 +76,36 @@ class SopController extends ChangeNotifier {
 
   /// Adds a new SOP document to memory and persists to repository.
   Future<void> addSop(String companyCode, SOPDocument newSop) async {
-    _sops = [newSop, ..._sops];
+    final existingIdx = _sops.indexWhere((s) => s.id == newSop.id);
+    if (existingIdx >= 0) {
+      final copy = List<SOPDocument>.from(_sops);
+      copy[existingIdx] = newSop;
+      _sops = copy;
+    } else {
+      _sops = [newSop, ..._sops];
+    }
     notifyListeners();
 
     onSopAdded?.call(newSop);
 
     try {
-      await _repository.createSop(companyCode, newSop);
+      await _repository.createSop(companyCode, newSop, currentList: _sops);
     } catch (e) {
       _errorMessage = e.toString();
       debugPrint('SopController.addSop repository error: $e');
+    }
+  }
+
+  /// Updates an existing SOP document (e.g. revision upload) in memory and repository.
+  Future<void> updateSop(String companyCode, SOPDocument updatedSop) async {
+    _sops = _sops.map((s) => s.id == updatedSop.id ? updatedSop : s).toList();
+    notifyListeners();
+
+    try {
+      await _repository.updateSop(companyCode, updatedSop, currentList: _sops);
+    } catch (e) {
+      _errorMessage = e.toString();
+      debugPrint('SopController.updateSop repository error: $e');
     }
   }
 
@@ -102,12 +122,45 @@ class SopController extends ChangeNotifier {
     }
   }
 
-  /// Confirms that current user has read the SOP.
-  Future<void> confirmReadSop(String companyCode, String sopId) async {
+  /// Confirms that current user has read the SOP and updates team verification metrics.
+  Future<void> confirmReadSop(
+    String companyCode,
+    String sopId, {
+    int totalEmployees = 6,
+  }) async {
     SOPDocument? target;
     _sops = _sops.map((s) {
       if (s.id == sopId) {
-        target = s.copyWith(isReadByMe: true);
+        final alreadyRead = s.isReadByMe;
+        int currentRead = 0;
+        int totalTeam = totalEmployees > 0 ? totalEmployees : 6;
+
+        if (s.readTeamCount != null && s.readTeamCount!.contains('/')) {
+          final parts = s.readTeamCount!.split('/');
+          currentRead = int.tryParse(parts[0].trim()) ?? 0;
+          final denomPart = parts[1].replaceAll(RegExp(r'[^0-9]'), '');
+          final parsedDenom = int.tryParse(denomPart);
+          if (parsedDenom != null && parsedDenom > 0) {
+            totalTeam = parsedDenom;
+          }
+        }
+
+        if (!alreadyRead || currentRead == 0) {
+          currentRead = (currentRead + 1).clamp(1, totalTeam);
+        }
+
+        final newPercent = ((currentRead / totalTeam) * 100).round().clamp(
+          0,
+          100,
+        );
+
+        target = s.copyWith(
+          isReadByMe: true,
+          isUrgentMandatory: false,
+          readProgressPercent: newPercent,
+          readTeamCount: '$currentRead/$totalTeam Tim',
+          complianceRatioText: '$newPercent% Karyawan terverifikasi',
+        );
         return target!;
       }
       return s;
@@ -120,7 +173,7 @@ class SopController extends ChangeNotifier {
 
     if (target != null) {
       try {
-        await _repository.updateSop(companyCode, target!);
+        await _repository.updateSop(companyCode, target!, currentList: _sops);
       } catch (e) {
         _errorMessage = e.toString();
         debugPrint('SopController.confirmReadSop repository error: $e');
@@ -143,7 +196,7 @@ class SopController extends ChangeNotifier {
 
     if (target != null) {
       try {
-        await _repository.updateSop(companyCode, target!);
+        await _repository.updateSop(companyCode, target!, currentList: _sops);
       } catch (e) {
         _errorMessage = e.toString();
         debugPrint('SopController.toggleBookmarkSop repository error: $e');

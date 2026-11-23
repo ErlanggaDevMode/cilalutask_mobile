@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:cilalutask_mobile/core/widgets/app_confirm_dialog.dart';
-import 'package:cilalutask_mobile/core/widgets/app_empty_state.dart';
-import 'package:cilalutask_mobile/main.dart';
-import 'package:cilalutask_mobile/models/task.dart';
-import 'package:cilalutask_mobile/screens/auth/login_screen.dart';
-import 'package:cilalutask_mobile/state/app_state_controller.dart';
-import 'package:cilalutask_mobile/state/app_state_scope.dart';
-import 'package:cilalutask_mobile/widgets/modals/create_task_bottom_sheet.dart';
+import 'package:Cilulatask_mobile/core/widgets/app_confirm_dialog.dart';
+import 'package:Cilulatask_mobile/core/widgets/app_empty_state.dart';
+import 'package:Cilulatask_mobile/main.dart';
+import 'package:Cilulatask_mobile/models/task.dart';
+import 'package:Cilulatask_mobile/screens/auth/login_screen.dart';
+import 'package:Cilulatask_mobile/state/app_state_controller.dart';
+import 'package:Cilulatask_mobile/state/app_state_scope.dart';
+import 'package:Cilulatask_mobile/widgets/modals/create_task_bottom_sheet.dart';
 
 void main() {
   setUp(() {
@@ -209,7 +209,7 @@ void main() {
           expect(controller.isAuthenticated, isFalse);
 
           // Fix email, but keep short password
-          await tester.enterText(emailField, 'admin@cilalutask.com');
+          await tester.enterText(emailField, 'admin@Cilulatask.com');
           await tester.tap(loginBtn);
           await tester.pumpAndSettle();
 
@@ -294,7 +294,7 @@ void main() {
           });
 
           final controller = AppStateController();
-          await tester.pumpWidget(CilalutaskApp(controller: controller));
+          await tester.pumpWidget(CilulataskApp(controller: controller));
           await tester.pumpAndSettle();
 
           // Login as Admin
@@ -360,7 +360,7 @@ void main() {
           });
 
           final controller = AppStateController();
-          await tester.pumpWidget(CilalutaskApp(controller: controller));
+          await tester.pumpWidget(CilulataskApp(controller: controller));
           await tester.pumpAndSettle();
 
           // Login as Admin
@@ -426,7 +426,7 @@ void main() {
           });
 
           final controller = AppStateController();
-          await tester.pumpWidget(CilalutaskApp(controller: controller));
+          await tester.pumpWidget(CilulataskApp(controller: controller));
           await tester.pumpAndSettle();
 
           // Select Karyawan role and login
@@ -473,7 +473,7 @@ void main() {
         });
 
         final controller = AppStateController();
-        await tester.pumpWidget(CilalutaskApp(controller: controller));
+        await tester.pumpWidget(CilulataskApp(controller: controller));
         await tester.pumpAndSettle();
 
         // Verify no RenderFlex overflow on LoginScreen

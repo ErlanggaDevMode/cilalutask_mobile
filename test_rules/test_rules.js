@@ -16,7 +16,7 @@ test.before(async () => {
   const rules = fs.readFileSync(rulesPath, 'utf8');
 
   testEnv = await initializeTestEnvironment({
-    projectId: 'demo-cilalutask-test',
+    projectId: 'demo-Cilulatask-test',
     firestore: {
       host: '127.0.0.1',
       port: 8080,

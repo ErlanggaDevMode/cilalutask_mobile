@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -58,9 +60,10 @@ class CustomAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final initials = getInitials(fallbackText);
     final gradientColors = customGradient ?? getGradientForName(fallbackText);
-    final hasValidUrl =
-        imageUrl.trim().startsWith('http://') ||
-        imageUrl.trim().startsWith('https://');
+    final url = imageUrl.trim();
+    final hasValidUrl = url.startsWith('http://') || url.startsWith('https://');
+    final bytes = _decodeDataUri(url);
+    final hasImage = hasValidUrl || bytes != null;
 
     Widget avatarCircle = Container(
       width: radius * 2,
@@ -68,7 +71,7 @@ class CustomAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: hasBorder ? Border.all(color: borderColor, width: 1.5) : null,
-        gradient: !hasValidUrl
+        gradient: !hasImage
             ? LinearGradient(
                 colors: gradientColors,
                 begin: Alignment.topLeft,
@@ -76,10 +79,22 @@ class CustomAvatar extends StatelessWidget {
               )
             : null,
       ),
-      child: hasValidUrl
+      child: bytes != null
+          ? ClipOval(
+              child: Image.memory(
+                bytes,
+                width: radius * 2,
+                height: radius * 2,
+                fit: BoxFit.cover,
+                gaplessPlayback: true,
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildInitialsWidget(initials, gradientColors),
+              ),
+            )
+          : hasValidUrl
           ? ClipOval(
               child: Image.network(
-                imageUrl.trim(),
+                url,
                 width: radius * 2,
                 height: radius * 2,
                 fit: BoxFit.cover,
@@ -125,27 +140,36 @@ class CustomAvatar extends StatelessWidget {
     return avatarCircle;
   }
 
+  /// Decodes uploaded photos stored as `data:image/...;base64,...` (cached).
+  static final Map<String, Uint8List> _dataCache = {};
+  static Uint8List? _decodeDataUri(String url) {
+    if (!url.startsWith('data:image')) return null;
+    final cached = _dataCache[url];
+    if (cached != null) return cached;
+    try {
+      final bytes = UriData.parse(url).contentAsBytes();
+      if (_dataCache.length > 50) _dataCache.clear();
+      return _dataCache[url] = bytes;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Empty avatar: neutral human silhouette (WhatsApp style).
   Widget _buildInitialsWidget(String initials, List<Color> colors) {
     return Container(
       width: radius * 2,
       height: radius * 2,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: colors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Color(0xFFCBD5E1),
       ),
       alignment: Alignment.center,
-      child: Text(
-        initials,
-        style: TextStyle(
-          fontSize: radius * 0.75,
-          fontWeight: FontWeight.w800,
-          color: Colors.white,
-          letterSpacing: 0.5,
-        ),
+      child: Icon(
+        Icons.person_rounded,
+        size: radius * 1.4,
+        color: Colors.white,
+        semanticLabel: initials,
       ),
     );
   }

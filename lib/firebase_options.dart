@@ -44,9 +44,9 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyDCYeKLZyA9X3ntw01I0_XphLT57Po13Bo',
     appId: '1:444266460057:web:6f63dc46710535f6959908',
     messagingSenderId: '444266460057',
-    projectId: 'cilalutask',
-    authDomain: 'cilalutask.firebaseapp.com',
-    storageBucket: 'cilalutask.firebasestorage.app',
+    projectId: 'Cilulatask',
+    authDomain: 'Cilulatask.firebaseapp.com',
+    storageBucket: 'Cilulatask.firebasestorage.app',
     measurementId: 'G-HLBRN59ZRP',
   );
 
@@ -54,35 +54,35 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyA-cHwi5tWJUcgIzBrG8e5-fpF6oZJtwPQ',
     appId: '1:444266460057:android:70dd1ec95ec31f2a959908',
     messagingSenderId: '444266460057',
-    projectId: 'cilalutask',
-    storageBucket: 'cilalutask.firebasestorage.app',
+    projectId: 'Cilulatask',
+    storageBucket: 'Cilulatask.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBegDdAScyabLt2_24v9E2-Ix_Wi6_h-n8',
     appId: '1:444266460057:ios:c5e988baa0c2a3c2959908',
     messagingSenderId: '444266460057',
-    projectId: 'cilalutask',
-    storageBucket: 'cilalutask.firebasestorage.app',
-    iosBundleId: 'com.cilalutask.cilalutaskMobile',
+    projectId: 'Cilulatask',
+    storageBucket: 'Cilulatask.firebasestorage.app',
+    iosBundleId: 'com.Cilulatask.CilulataskMobile',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBegDdAScyabLt2_24v9E2-Ix_Wi6_h-n8',
     appId: '1:444266460057:ios:c5e988baa0c2a3c2959908',
     messagingSenderId: '444266460057',
-    projectId: 'cilalutask',
-    storageBucket: 'cilalutask.firebasestorage.app',
-    iosBundleId: 'com.cilalutask.cilalutaskMobile',
+    projectId: 'Cilulatask',
+    storageBucket: 'Cilulatask.firebasestorage.app',
+    iosBundleId: 'com.Cilulatask.CilulataskMobile',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyDCYeKLZyA9X3ntw01I0_XphLT57Po13Bo',
     appId: '1:444266460057:web:f2706887ba043636959908',
     messagingSenderId: '444266460057',
-    projectId: 'cilalutask',
-    authDomain: 'cilalutask.firebaseapp.com',
-    storageBucket: 'cilalutask.firebasestorage.app',
+    projectId: 'Cilulatask',
+    authDomain: 'Cilulatask.firebaseapp.com',
+    storageBucket: 'Cilulatask.firebasestorage.app',
     measurementId: 'G-B4687XCNX0',
   );
 }
